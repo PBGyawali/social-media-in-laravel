@@ -1,0 +1,12 @@
+
+
+POST http://localhost/media/api/message
+Content-Type: application/json
+Accept: application/json
+
+
+
+{
+"message": "Test message",
+"user": "Testuser"
+}
