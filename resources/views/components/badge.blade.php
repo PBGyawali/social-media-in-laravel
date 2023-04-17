@@ -1,0 +1,1 @@
+<span  class="badge badge-{{$class}} py-1 px-2">{{ucwords($status)}}</span>
