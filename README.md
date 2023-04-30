@@ -1,15 +1,9 @@
-<p align="center"><img src="https://github.com/PBGyawali/social-media-in-laravel/blob/main/public/images/logo/logo%20with%20words.png1624036335.png" width="400" alt="Laravel Logo"></p>
+<p align="center"><img src="https://github.com/PBGyawali/social-media-in-laravel/blob/main/public/images/logo/logo%20with%20words.png1624036335.png" width="400" alt=" Logo"></p>
 
-## About Laravel
+## Hamro Katha
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Hamro Katha is a social media with expressive, elegant user interface. We believe social media must be an enjoyable and creative experience to be truly fulfilling. 
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+
 
 
