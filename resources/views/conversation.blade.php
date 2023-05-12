@@ -21,7 +21,7 @@ $id=auth()->id();
                                     <div class="dropdown d-inline">
                                         <span class="btn btn-link btn-sm" data-toggle="dropdown"><i class="fas fa-arrow-down text-blue-400"></i></span>
                                         <div class="dropdown-menu text-blue shadow dropdown-menu-right " role="menu">
-                                            <a class="dropdown-item pt-0 " data-id="<?= $user->id; ?>">Delete this Conversation</a>
+                                            <a class="dropdown-item pt-0 " data-id="<?= $user->getkey(); ?>">Delete this Conversation</a>
                                         </div>
                                      </div>
                                 </div>
@@ -36,7 +36,7 @@ $id=auth()->id();
                     <?php
                             $float=$row_class='';
                             $background_class =' mb-0 ';
-                            if($id!=$chat->sender_id){
+                            if(auth()->id()!=$chat->sender_id){
                                 $row_class = ' flex-row-reverse ';
                                 $background_class = ' mb-0 ';
                                 $float=' float-right ';

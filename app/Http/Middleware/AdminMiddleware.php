@@ -11,7 +11,7 @@ use App\Models\WebsiteInfo;
 use App\Helper\Helper;
 use App\Models\OfflineMessage;
 use App\Models\Alert;
-
+use Illuminate\Support\Facades\Route;
 
 class AdminMiddleware
 {
@@ -40,29 +40,30 @@ class AdminMiddleware
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
      * @return mixed
+     *
      */
-    public function handle(Request $request, Closure $next)
+    public function handle($request, Closure $next, ...$guards)
     {
            if (!auth()->user()->is_editor()) {
                 if ($request->ajax()) {
                     return response()->json(array('error'=>
-                    '<div class="alert alert-danger alert-dismissible fade show">
-                    You must be an admin to perform this action
-                    <button type="button" class="close" onclick="hide()">&times;</button>
-                    </div>'));
+                    'You must be an admin to perform this action'));
                 }
                 return back()->with('error','You must be an admin to view this page!');
             }
 
             if (!request()->ajax()){
-                $id=auth()->id();
-                $messages=Helper::messages($id);
-                $messagecount=OfflineMessage::user_id($id)->read()->count();
-                $alerts=Helper::alerts($id);
-                $alertcount=Alert::user_id($id)->read()->count();
-                $info=WebsiteInfo::first();
+                $page=explode('.',Route::currentRouteName())[0];
+                $support_active=$dashboard_active=$user_active=$tickets_active=$posts_active =$topics_active=
+                $manage_article='inactive_class';
+                ${$page."_active"} = 'active_class';
+                if($page== 'posts'|| $page =='topics')$manage_article='active_class' ;
+                $side='';
                 // sharing values to all pages in group
-                view()->share(compact('info','messages','alerts','alertcount','messagecount'));
+                view()->share(compact('page',
+                'dashboard_active','user_active','tickets_active','posts_active','topics_active',
+                'manage_article','side','support_active'
+            ));
             }
 
         return $next($request);

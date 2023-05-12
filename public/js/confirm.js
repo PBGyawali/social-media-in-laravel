@@ -71,16 +71,16 @@ $(document).ready(function(){
                               success:function(data){
                                 $(".file_upload").val('');
                               if("error" in data  && data.error != '')
-                                  $('.error_msg').html(data.error).show().fadeTo(3500, 800).slideUp(800);
+                                    showMessage(data.error,'danger');
                                 else if("profile_image" in data && "url" in data)
                                 {	profile(data.profile_image,data.url);
-                                  $('.success_msg').html(data.success).show().fadeTo(3500, 800).slideUp(800);
+                                    showMessage(data.success,'success');
                                   $('#upload_icon_text').text(' Upload New');
                                   $('.delete_btn').hide();
                                 }
                                 else{
                                     profile(data.image);
-                                    result(data.response)
+                                    showMessage(data.response,'success');
                                     $('#upload_icon_text').text(' Upload New');
                                     $('.delete_btn').hide();
                                   }
@@ -133,19 +133,19 @@ $(document).ready(function(){
                                     }
                                 }, false);
                                 }
-                                
+
                                 return myXhr;
                             },
                             success:function(data)
                                   {
                                     $(".file_upload").val('');
-                                    $('#alert_action,#message').fadeIn().html(data.response);
+                                    showMessage(data.response,'success');
                                       if("error" in data  && data.error != '')
-                                        $('.error_msg').text(data.error).show().fadeTo(2500, 500).slideUp(500);
+                                      showMessage(data.error,'danger');
                                       else if("profile_image" in data && "url" in data)
                                       {
                                         profile(data.profile_image,data.url);
-                                        $('.success_msg').text(data.success).show().fadeTo(3500, 800).slideUp(800);
+                                        showMessage(data.success,'success');
                                         $('#upload_icon_text').text(' Change');
                                         $('#delete_div').html(data.button);
                                         $('#delete_picture').show();
@@ -168,12 +168,10 @@ $(document).ready(function(){
 
     function profile(imagefile,url=''){
       profile_image=url+imagefile;
-      $('#profile_image').val(imagefile);
       var image='<img src="'+profile_image+'" class="rounded-circle img-fluid mb-1 mt-0"	';
-      $('#user_uploaded_image').html('<a data-fancybox="gallery" href="'+profile_image+
-      '"data-caption="Your full picture">'+image+' width="150"  ></span>');
-      $('#user_uploaded_image_medium').html(image+' width="100"  />');
-      $('#user_uploaded_image_small').html(image+' width="30"  />');
+
+      $('#fancybox').attr('href',profile_image);
+      $('.profile_image').attr('src',profile_image);
     }
 
     function showAlert($content){
@@ -219,17 +217,6 @@ $(document).ready(function(){
 
 });//document .ready function end
 
-
-
-function timeout()
-    {		setTimeout(function(){
-              $('.error, .message, .alert').slideUp();
-      }, 3000);
-
-      setTimeout(function(){
-      $('#message,#alert_action,#form_message').html('');
-      }, 5000);
-    }
 
 
 

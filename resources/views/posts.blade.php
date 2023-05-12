@@ -46,7 +46,7 @@
 
 
 @include('minimal_footer')
-<?php include_once ( INCLUDES . 'footer.php') ?>
+@include('footer')
 <script type="text/javascript" src="<?= JS_URL.'datatables.min.js'?>"></script>
 <link rel="stylesheet" href="<?= CSS_URL.'datatables.min.css'?>" >
 @include('footer_script')

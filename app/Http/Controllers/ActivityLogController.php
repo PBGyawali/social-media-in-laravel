@@ -10,7 +10,7 @@ use App\Models\OfflineMessage;
 use App\Models\WebsiteInfo;
 use App\Helper\Helper;
 use Illuminate\Support\Facades\DB;
-
+use App\Models\Post;
 
 class ActivityLogController extends Controller
 {
@@ -26,16 +26,15 @@ class ActivityLogController extends Controller
         $id = auth()->id();
 
         // Check if a user ID was passed in the request.
-        $logid = $request->id ?? auth()->id();
+        $logid = $request->id ?? $id;
 
         // Set the default view and page title.
-        $info = $page = 'activitylog';
+        $page = 'activitylog';
         $view = 'admin.activitylog';
 
         // If the route is for a user's activity log, set the view and page title accordingly.
         if ($request->route()->named('user.activitylog')) {
-            $view = $page;
-            $info = WebsiteInfo::first();
+            $view = 'activitylog';
             $logid = $id;
         }
 
@@ -46,21 +45,15 @@ class ActivityLogController extends Controller
         if ($logid != $id) {
             $logged_user = User::find($logid);
             if ($logged_user) {
-                $logged_username = $logged_user->username;
+                $logged_username ='for '. $logged_user->username;
             }
         }
-
-        // Get the unread messages and alerts as well as their count for the current user.
-        $messages = Helper::messages($id);
-        $messagecount = OfflineMessage::user_id($id)->read()->count();
-        $alertcount = Alert::user_id($id)->read()->count();
-        $alerts = Helper::alerts($id);
 
         // Get the activity logs for the specified user or the currently logged in user and paginate the results.
         $logs = ActivityLog::user_id($logid)->latest()->cursorPaginate();
 
         // Return the view containing the activity logs and relevant data.
-        return view($view, compact('logs', 'page', 'messages', 'messagecount', 'alertcount', 'alerts', 'info', 'logged_username'));
+        return view($view, compact('logs', 'logged_username'));
     }
 
 
@@ -79,10 +72,11 @@ class ActivityLogController extends Controller
             //record the visit
             session(['page='.$post_id =>"yes"]);
             //update the visit for current post
-            $counter_table =DB::table('posts')->find($post_id);
-            $counter_value =$counter_table->views;
-            $counter_value++;
-            DB::table('posts')->where('id',$post_id)->update(['views'=>$counter_value]);
+            // $counter_table =DB::table('posts')->find($post_id);
+            // $counter_value =$counter_table->views;
+            // $counter_value++;
+            // DB::table('posts')->where('id',$post_id)->update(['views'=>$counter_value]);
+            Post::find($post_id)->increment('views');
             //store the total visit and browser visit for the user
             $this->store($post_id,$userid,$browser);
         }
@@ -104,7 +98,11 @@ class ActivityLogController extends Controller
 
             $updateColumns = ['post_id', 'owner_id'];
             //update row if value exist, or insert a new row if value doesn't exist
-            return DB::table('visitor_log')->upsert($data, $updateColumns, $attr);
+           // return DB::table('visitor_log')->upsert($data, $updateColumns, $attr);
+           return DB::table('visitor_log')->updateOrInsert(
+                            ['post_id' => $post_id,'owner_id' => $user_id],
+                            $attr
+                        );
         }
     }
 

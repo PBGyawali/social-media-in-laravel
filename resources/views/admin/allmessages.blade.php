@@ -1,9 +1,6 @@
 @include('config')
-<?php
-include_once(ADMIN_INCLUDES.'admin_header.php');
-include_once(ADMIN_INCLUDES.'admin_sidebar.php');
-$logged_username=(isset($log_username)&&!empty($log_username))?'for '. $log_username:'';
- ?>
+@include('admin_header')
+@include('admin_sidebar')
     <div class="d-flex flex-column " id="content-wrapper">
         <div id="content">
             <div class="container-fluid ">

@@ -170,7 +170,7 @@ $id=$row->id;
           </div>
         </div>
     </div>
-    <?php include_once(INCLUDES.'minimal_footer.php');?>
+    @include('minimal_footer')
     <script src="<?= JS_URL.'confirmdefaults.js'?>"></script>
     <script src="<?= JS_URL.'confirm.js'?>"></script>
 <script type="text/javascript" src="<?= JS_URL?>user_action.js" ></script>

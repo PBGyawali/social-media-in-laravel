@@ -17,7 +17,8 @@ class UserlogController extends Controller
     public function update(Request $request, Userlog $userlog)
     {
         $userlog->update($request->all());
-        return response()->json(array('response'=>'<div class="alert alert-success">Details Updated Successfully</div>'));
+        return response()->json(['response'=>__('message.update',['name'=>'user'])]);
+       
     }
 
 

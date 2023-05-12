@@ -1,9 +1,10 @@
-<?= $__env->make('config', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render();
-?>
+@include('config')
+@include('minimal_header')
+@include('sidebar');
+
 </head>
 <body>
-    @include('minimal_header');
-    @include('sidebar');
+
     <div class="container container-fluid my-0 mb-8">
                 <div class="content text-center">
                     <h2 class="content-title text-primary mt-2"> Recent Articles on <u><?= $topic_name; ?></u></h2>
@@ -42,5 +43,5 @@
 
 
 @include('minimal_footer')
-<?php include_once(INCLUDES.'footer.php'); ?>
+@include('footer')
 @include('footer_script')

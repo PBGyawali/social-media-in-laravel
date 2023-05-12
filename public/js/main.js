@@ -1,6 +1,9 @@
 $(document).ready(function() {
     emailcondition=usernamecondition=true
-    $('.user_form').parsley();
+    if($('.user_form').length){
+        $('.user_form').parsley();
+    }
+
     $.ajaxSetup({
       headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -212,6 +215,7 @@ $('.login_link').on('click', function(event){
         }
 
         $('#reg_btn').on('click', function(event){
+            let form=$(this).closest("form");
           if ( !emailcondition || !usernamecondition) {
             let message='We cannot move forward until ';
                   if (!emailcondition && !usernamecondition)
@@ -225,7 +229,40 @@ $('.login_link').on('click', function(event){
            event.preventDefault();
          }else{
              // proceed with form submission
-             $('#register_form').submit();
+             //$('#register_form').submit();
+             form.submit();
           }
         })
+
+        $('#reg_bt').click(function(event){
+            event.preventDefault();
+            let form=$(this).closest("form");
+            let inputs=form.find("input:not(':hidden'),select:not([hidden])");
+            $('.errormessage').text('');
+            $.each(inputs,function(key,input){
+                var name=$(input).attr('name')
+                let displayName=createDisplayName(name);
+                var value=$(input).val();
+                if(!value ){
+                    $(input).after($(`<span class="text-danger errormessage"
+                            id="errormessage_${key}" >${displayName} cannot be empty</span>`));
+                }
+                else
+                $('#errormessage_'+key).text('');
+            });
+            if($('.errormessage').length)
+                return
+            form.submit();
+      });
+
+      function createDisplayName(str) {
+        return str.replace(/_/g, " ")
+                   .replace("id", "name")
+                   .replace("from", "start")
+                   .replace("to", "end")
+                   .split(" ")
+                   .map(word => word.charAt(0)
+                   .toUpperCase() + word.slice(1))
+                   .join(" ");
+     }
 });

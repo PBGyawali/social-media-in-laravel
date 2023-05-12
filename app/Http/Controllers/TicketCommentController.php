@@ -42,5 +42,6 @@ class TicketCommentController extends Controller
     public function destroy(TicketComment $ticketComment)
     {
         $ticketComment->delete();
+        return response()->json(['delete'=>$ticketComment->getKey()]);
     }
 }

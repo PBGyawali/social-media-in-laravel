@@ -26,5 +26,5 @@
     </div>
 </div>
 @include('minimal_footer')
-<?php include_once ( INCLUDES . 'footer.php') ?>
+@include('footer')
 @include('footer_script')

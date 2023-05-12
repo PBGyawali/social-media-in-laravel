@@ -28,7 +28,6 @@ $(document).ready(function(){
 					timeout();
 					if(data.status == 'success' && formclass=='password'){
 						$('#user_form')[0].reset();
-						$('.timeago').timeago('update', new Date());
 					}
 				}
 			})

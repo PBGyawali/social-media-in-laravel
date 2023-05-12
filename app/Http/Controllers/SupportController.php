@@ -9,7 +9,7 @@ use App\Models\WebsiteInfo;
 use App\Helper\Helper;
 use App\Models\OfflineMessage;
 use App\Models\Alert;
-
+use Faker\Factory as Faker;
 class SupportController extends Controller
 {
     /**
@@ -19,38 +19,48 @@ class SupportController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->ajax()) {
-        $query=Support::orderBy('id');
-        if($request->from_date!=''&& $request->to_date!='')
-            $query->whereBetween('created_at',[$request->from_date, $request->to_date]);
-        $data=$query->get();
-        return DataTables::of($data)
-        ->addColumn('action', function($data){
-        $actionBtn = '<button type="button"  title="edit"class="fa fa-edit btn btn-primary btn-sm update" data-prefix="Post" data-id="'. $data->id .'"></button>';
-        $actionBtn .='
-        <button type="button"  title="delete" class="fa fa-trash btn btn-danger btn-sm delete" data-action="delete" data-id="'. $data->id .'"></button>';
-        })
-        ->editColumn('status', function ($data) {
-            $status = '<i class="fa fa-times btn btn-danger"></i>';
-            if($data->is_active())
-                $status = '<i class="fa fa-check btn btn-success"></i>';
-            return $status;
-             })
-        ->make(true);
+        $emails=Support::orderBy('created_at','desc')->get();
+        $total=$emails->count();
+        $faker = Faker::create();
+        $names = [];
+        for ($i = 0; $i < $total; $i++) {
+            $names[] = $faker->name();
         }
-        $info=WebsiteInfo::first();
-        $page='support';
-        return view('admin.support',compact('info','page'));
+        $page='inbox';
+        $total_inbox=Support::count();  
+        return view('admin.inbox',compact('emails','page','names','total_inbox'));
     }
 
+
+    public function create(Request $request)
+    {
+        // $emails=Support::orderBy('created_at','desc')->get();
+        // $total=$emails->count();
+        // $faker = Faker::create();
+        // $names = [];
+        // for ($i = 0; $i < $total; $i++) {
+        //     $names[] = $faker->name();
+        // }
+        $page='compose'; 
+        $support_active='inactive_class';
+        $total_inbox=Support::count();   
+        return view('admin.compose',compact('page','support_active','total_inbox'));
+    }
+
+    public function show(Request $request,Support $id)
+    {
+        $email=$id;        
+        $page='mail view';
+        $total_inbox=Support::count();
+        $support_active='inactive_class';    
+        return view('admin.mail-view',compact('email','page','total_inbox','support_active'));
+    }
 
     public function store(Request $request)
     {
         Support::create($request->all());
         if($request->ajax()){
-            return response()->json(array('response'=>
-            '<div class="alert alert-success">The message was sucessfuly
-            sent. We will reply you as soon as possible</div>'));
+            return response()->json(array('response'=>__('message.sent')));
         }
         $email=$request->email;
         $fullname=$request->full_name;

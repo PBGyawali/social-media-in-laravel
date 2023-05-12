@@ -20,14 +20,14 @@
                                     </div>
                                 </div>
                                 <div class="font-weight-bold">
-                                    <div class="d-inline-block text-truncate" style="max-width: 350px;"><span><?= $message->message; ?></span></div>
+                                    <div class="d-inline-block text-truncate" style="max-width: 350px;"><span><?=( auth()->user()->is_same_user($message->sender_id)?' ':'You: ').$message->message; ?></span></div>
                                     <p class="small text-gray-600 mb-0"><?= $message->username; ?> - <?= $message->sent_on; ?></p>
                                 </div>
                             </a>
                         </div>
                     </div>
                 <?php endforeach ?>
-                <a class="text-center dropdown-item small text-gray-500" href="<?=route($side.'messages')?>">Show All Messages</a>
+                <a class="text-center dropdown-item small text-gray-500" href="<?=route($side.'messages')?>">Show All Messages </a>
             <?php else: ?>
                 <?php include(COMPONENTS.'no_messages.blade.php')?>
             <?php endif ?>

@@ -1,0 +1,157 @@
+/* Import Fonts */
+@import url(http://fonts.googleapis.com/css?family=Coustard|Open+Sans);
+body {
+	font-family: 'Open Sans', sans-serif;
+	font-size: 14px;
+	line-height: 21px;
+	font-weight:400;
+	-webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+	color: rgb(235, 235, 235);
+	background: #000;
+	margin-top: 0px;
+}
+h1{
+	font-family: 'Coustard', serif;
+	color:#fff;
+	font-weight: normal;
+	letter-spacing: 1px;
+	font-size: 63px;
+	line-height: 70px;
+	 padding: 0; margin: 0;
+}
+
+
+p{
+	word-wrap: break-word;
+	word-break: break-word;
+  }
+
+/* Set the background ima */
+#maximage {
+	display:none;
+	position:fixed !important;
+	margin-top: 0px;
+}
+
+.gradient {
+	left:0;
+	height:100%;
+	position:absolute;
+	width:100%;
+	z-index:999;
+	}
+
+	div.mc-image {
+		/*NOTE: Mozilla flickers when fading and using 'all', so we have to be specific with what property we want to transition:
+			 If you are using fading transitions, use 'opacity: */
+		-webkit-transition: opacity 1s ease-in-out;
+		-moz-transition: opacity 1s ease-in-out;
+		-o-transition: opacity 1s ease-in-out;
+		transition: opacity 1s ease-in-out;
+
+		/*If you are using horizontal slide transitions, use the following CSS:
+		-webkit-transition: left 1s ease-in-out;
+		-moz-transition: left 1s ease-in-out;
+		-o-transition: left 1s ease-in-out;
+		transition: left 1s ease-in-out;*/
+
+		-webkit-background-size: cover;
+		-moz-background-size: cover;
+		-o-background-size: cover;
+		background-size: cover;
+		background-position:center center;
+		background-repeat:no-repeat;
+		height:100%;
+		overflow:hidden;
+		width:100%;
+	}
+
+	.mc-old-browser .mc-image {
+		overflow:hidden;
+	}
+/* Set Page Elements */
+.content {
+	float:left;
+	margin:40px;
+	position:absolute;
+	width:500px;
+	top:200px;
+	z-index:999;
+	-webkit-font-smoothing:antialiased;
+}
+a.link {
+	color:yellow;
+	text-decoration:none;
+	font-weight: normal;
+}
+a:hover {text-decoration:underline;}
+.main-nav ul li {
+	display: inline;
+	padding-right: 10px;
+	padding-left: 10px;
+	border-left: 1px solid yellow;
+
+}
+.main-nav ul li a.link.active {color: #ffa800;}
+
+section .social-nav {
+	position:absolute;
+	right: 50px;
+}
+.social-nav ul {margin: 0; padding:0;}
+.social-nav ul li{
+	list-style: none;
+	display:block;
+	float: left;
+	background: #393939;
+	padding:25px 10px 25px 10px;
+	margin: 1px;
+	opacity: .5;
+}
+.social-nav ul li:hover {opacity: 1;}
+
+#arrow_left, #arrow_right {
+	bottom:30px;
+	height:42px;
+	position:absolute;
+	right:40px;
+	width:42px;
+	z-index:1000;
+}
+#arrow_left {
+	right:95px;
+}
+@media screen and (max-width: 650px) {
+	h1{
+
+		font-size: 33px !important;
+	}
+	h5{
+		font-size: 1.20em !important;
+	}
+	#logo {
+		font-size: 29px;
+		width:20%;
+	}
+		#arrow_left, #arrow_right {
+			width:30px;
+
+		}.main-nav ul li {
+
+			padding-right: 5px;
+			padding-left: 5px;
+		}
+		/* Set Page Elements */
+		.content {
+			width:auto;
+		}
+		#arrow_left, #arrow_right {
+
+			right:15px;
+
+		}
+		#arrow_left {
+			right:55px;
+		}
+}

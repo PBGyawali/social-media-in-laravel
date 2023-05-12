@@ -1,0 +1,1 @@
+<span  class="badge badge-<?php echo e($class); ?> py-1 px-2 border border-light"><?php echo e(ucwords($status)); ?></span><?php /**PATH D:\Dropbox\UniServerZ\www\media\resources\views\components/badge.blade.php ENDPATH**/ ?>

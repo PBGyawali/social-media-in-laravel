@@ -101,12 +101,10 @@
 </body>
 </html>
 @include('minimal_footer')
-@include('footer_script')
-
 <script type="text/javascript" src="<?= JS_URL.'parsley.min.js'?>"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.8.0/ckeditor.js"></script>
 <link rel="stylesheet" href="<?= CSS_URL.'parsley.css'?>" >
+@include('footer_script')
 <script>
 	$('#post_form').parsley();
-
 </script>

@@ -40,7 +40,7 @@ Route::get('/filtered_posts/{topic}',[TopicController::class, 'show'])->name('to
 Route::get('/single_post/{slug}',[PostController::class, 'show'])->name('single_post');
 Route::post('/post/logs',[ActivityLogController::class, 'show'])->name('postlogs');
 Route::get('/underconstruction', function () {return view('underconstruction');});
-Route::post('/support',[SupportController::class, 'store'])->name('support');
+Route::post('/support',[SupportController::class, 'store'])->name('user.support');
 
 
 Route::match(['get','post'],'/user',[UserController::class, 'index'])->name('user.delete');
@@ -50,12 +50,15 @@ Route::middleware(['auth'])->group(function(){
     Route::middleware(['admin'])->group(function(){
 
         Route::group(['prefix' => 'admin'], function () {
+
+            Route::get('/inbox',[SupportController::class, 'index'])->name('support');
+            Route::get('/inbox/{id}/show',[SupportController::class, 'show'])->name('support.show');
+            Route::get('/inbox/create',[SupportController::class, 'create'])->name('support.create');
             Route::get('/settings',[WebsiteInfoController::class, 'edit'])->name('settings')->middleware('password.confirm');
             Route::get('/settings/update/')->name('settings_update');
             Route::post('/settings/update/{website_info}',[WebsiteInfoController::class, 'update']);
 
-            Route::get('/support',[SupportController::class, 'index'])->name('admin.support');
-            Route::get('/support',[SupportController::class, 'index']);
+           // Route::get('/support',[SupportController::class, 'index'])->name('admin.support');
 
             Route::match(['get','post'],'/posts',[PostController::class, 'index'])->name('post');
             Route::post('/posts/{post}/edit',[PostController::class, 'edit'])->name('post.edit');
@@ -69,7 +72,7 @@ Route::middleware(['auth'])->group(function(){
 
 
             Route::get('/user/csv/',[UserController::class, 'downloadCSV'])->name('user.csv');
-            Route::post('/user/create',[UserController::class, 'store'])->name('user.create');;
+            Route::post('/user/create',[UserController::class, 'store'])->name('user.create');
             Route::get('/user/create',[UserController::class, 'store']);
             Route::post('/user/{user}/edit',[UserController::class, 'edit']);
             Route::post('/user/{user}/show',[UserController::class, 'show']);
@@ -87,10 +90,14 @@ Route::middleware(['auth'])->group(function(){
             Route::post('/tickets/{ticket}/edit',[TicketController::class, 'edit']);
             Route::get('/tickets/create',[TicketController::class, 'create'])->name('ticket.create');
             Route::post('/tickets/create',[TicketController::class, 'store']);
-
+            
             Route::post('/tickets/{ticket}/update',[TicketController::class, 'update']);
             Route::delete('/tickets/{ticket}/delete',[TicketController::class, 'destroy']);
+
+            Route::match(['get','post'],'/tickets/comments',[TicketCommentController::class, 'index'])->name('ticket.comments');
             Route::post('/tickets/comments/create',[TicketCommentController::class, 'store'])->name('ticket.comments.create');
+            Route::delete('/tickets/comments/{ticketComment}/delete',[TicketCommentController::class, 'destroy']);
+
 
             Route::get('/',[DashboardController::class, 'create']);
             Route::get('/dashboard',[DashboardController::class, 'create'])->name('admin.dashboard');
@@ -171,3 +178,16 @@ Route::middleware(['auth'])->group(function(){
     });
 
 require __DIR__.'/auth.php';
+Route::middleware(['auth','admin'])->group(function(){
+    Route::get('admin/{page}', function ($page) {
+        // Check if the view file exists
+        if (view()->exists('admin/'.$page)) {
+            // Return the view
+            return view('admin/'.$page);
+        } else {
+           
+            // The view file does not exist
+            abort(404);
+        }
+    });
+});

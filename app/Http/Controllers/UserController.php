@@ -16,6 +16,9 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Auth\Events\Registered;
+use App\Events\DeletePicture;
 
 class UserController extends Controller
 {
@@ -65,29 +68,25 @@ class UserController extends Controller
                 ->setRowClass(function ($data) {
                     return $data->is_active()? 'bg-white' : 'bg-danger text-white';
                 })
+                ->editColumn('user_status', function ($data) {
+                    $status=$data->user_status;
+                    $class='danger';                    
+                    if($data->is_active())
+                        $class= 'success';
+                      return view('badge',compact('status','class'))->render();
+                     })
                 ->make(true);
         }
-        $info=$this->websiteInfo;
         $page='user';
-        $id=auth()->id();
-        $messages=Helper::messages($id);
-        $messagecount=OfflineMessage::user_id($id)->read()->count();
-        $alertcount=Alert::user_id($id)->read()->count();
-        $alerts=Helper::alerts($id);
-        return view('admin.userlist',compact('info','page','messages','messagecount','alertcount','alerts' ) );
+        return view('admin.userlist',compact('page' ) );
     }
 
 
     public function create(Request $request,User $users)
     {
         $check=$user=auth()->user();
-        $info=$this->websiteInfo;
         $id=$check->id;
         $points=$userfollowed=$userdata=$timestamp='';
-        $messages=Helper::messages($id);
-        $messagecount=OfflineMessage::user_id($id)->read()->count();
-        $alertcount=Alert::user_id($id)->read()->count();
-        $alerts=Helper::alerts($id);
         $page='profile';
         $view='admin.profile';
         if($request->route()->named('user.profile')){
@@ -106,8 +105,8 @@ class UserController extends Controller
         if($request->route()->named('password')){
             $view='admin.change_password';
         }
-        return view($view,compact('userfollowed','points','info','user','page',
-        'messages','messagecount','alertcount','alerts','info','users','userdata','timestamp','check'));
+        return view($view,compact('userfollowed','points','user','page',
+        'users','userdata','timestamp','check'));
     }
 
     public function show(User $user)
@@ -123,20 +122,20 @@ class UserController extends Controller
         'Google Plus'=>$user->googleplus,
         'Email status'=>[
             'class'=>$user->is_email_verified()?'success':'danger',
-            'value'=>$user->is_email_verified()?'Verified':'Not yet verified',             
+            'value'=>$user->is_email_verified()?'Verified':'Not yet verified',
             ],
         'Profile Verification status'=>[
             'class'=>$user->is_verified()?'success':'danger',
-            'value'=>$user->is_verified()?'Verified':'Not yet verified',          
+            'value'=>$user->is_verified()?'Verified':'Not yet verified',
             ],
-        'Status'=>[            
+        'Status'=>[
             'class'=>$user->is_active()?'success':'danger',
             'value'=>$user->is_active()?'Active':'Disabled',
             ],
         'Remarks'=>$user->userlog->remarks,
         ];
 
-        $output =view('view-modal',compact('viewdatas'))->render();    
+        $output =view('view-modal',compact('viewdatas'))->render();
              return response()->json($output);
 
     }
@@ -151,24 +150,25 @@ class UserController extends Controller
             'profile_image'=>['nullable','image','mimes:jpg,jpeg,png,bmp,tiff' ,'max:4096'],
         ]);
         if($request->hasFile('profile_image')){
-            $this->fields['profile_image']=basename($request->file('profile_image')->store('public/images/user_images/'));
-            $this->imageName=config('app.user_images_url').$this->fields['profile_image'];
+            $image_link=$request->file('profile_image')->store('public/images/user_images/');
+            $this->fields['profile_image']=basename($image_link);
         }
         $user=User::create(array_merge($request->all(), $this->fields));
         Userlog::create(['user_id'=>$user->id]);
         AlertLog::create(['user_id'=>$user->id]);
-       return response()->json(array('response'=>'<div class="alert alert-success">The user data was created!</div>','image'=>$this->imageName));
+        return response()->json(['response'=>__('message.create',['name'=>'user']),'image'=>$this->imageName]);
     }
 
 
 
 // function to download database data as csv file
-    public function downloadCSV(Request $request,)
+    public function downloadCSV(Request $request)
     {
-        $this->validate($request, [
-             'from_date' => ['required','date'],
-             'to_date' => ['required','date','after_or_equal:from_date'],
-         ]);
+
+        $validatedData = Validator::make(['start_date'=>$request->from_date, 'end_date'=>$request->to_date], [
+            'start_date' => ['required', 'date'],
+            'end_date' => ['required', 'date', 'after_or_equal:start_date','before:tomorrow'],
+        ])->validate();
                // Define the MySQL table name
                 $table = Str::plural('user');
                 // Set the file path and name
@@ -214,7 +214,7 @@ class UserController extends Controller
     }
 
     public function update(Request $request, User $user)
-{
+    {
     // Validate the input data
     if(!$request->hasAny('user_status','delete_picture','upload_picture','verified')){
         $this->validate($request, [
@@ -235,31 +235,36 @@ class UserController extends Controller
         // If not authorized, return without updating
         return;
     }
-
+    
     // Store the uploaded profile image file and update the image name and button HTML
     if($request->hasFile('profile_image')){
+        $previous_image=$user->getRawOriginal('profile_image');
         $storepath=$request->file('profile_image')->store('public/images/user_images/');
         $this->fields['profile_image']=basename($storepath);
-        $this->imageName=config('app.storage_url').$storepath;
-        $this->button='<button class="btn btn-danger btn-sm fa fa-trash delete_btn" id="delete_picture" title="Click on the button to delete your profile picture"> <span class="d-none d-md-inline-block">Delete</span></button>';
+       
     }
 
-    // Update the user's information and set the last password change date if a new password is provided
-    if($request->filled('password')){
-        $this->fields['last_password_change']=Helper::get_datetime();
-    }
     $user->update(array_merge(array_filter($request->all()), $this->fields));
 
-    // Log the password update if the current user is updating their own password
-    if($request->filled('password') && $user->is_same_user($id)){
+    // Log the password update if the current user updated their own password
+    if($user->wasChanged('password') && $user->is_same_user($id)){
         Helper:: activitylog($id,'update','password',$id);
+        $this->fields['last_password_change']=now();
+    }
+
+    // send new image if the current user is updating their own profile image
+    if($user->wasChanged('profile_image') && $user->is_same_user($id)){        
+        if($previous_image && $previous_image!='user_profile.png')
+            File::delete(config('app.user_images_path').$previous_image);
+        $this->imageName=$user->profile_image;
+        $this->button=view('delete_button')->render();
     }
 
     // Delete the profile image if requested and update the image name
     if($request->has('delete_picture')){
-        $imagename=basename($request->old_image);
-        if($imagename!='user_profile.png')
-            File::delete(config('app.user_images_path').$imagename);
+        $previous_image=basename($user->getRawOriginal('profile_image'));
+        if($previous_image && $previous_image!='user_profile.png')
+            File::delete(config('app.user_images_path').$previous_image);
         $this->imageName=$user->profile_image;
     }
 
@@ -267,8 +272,7 @@ class UserController extends Controller
     $user->userlog->update(array_merge(array_filter($request->all()), $this->fields));
 
     // Return a JSON response with a success message, the updated image name, and the updated button HTML
-    return response()->json(array('response'=>'<div class="alert alert-success">The user data was updated!</div>',
-        'image'=>$this->imageName,'button'=>$this->button));
+    return response()->json(['response'=>__('message.update',['name'=>'user']),'image'=>$this->imageName,'button'=>$this->button]);
     }
 
 
@@ -298,14 +302,12 @@ class UserController extends Controller
             $user->userlog->delete();
             $user->delete();
             DB::commit();
-            return response()->json(array('response'=>'<div class="alert alert-success">The user was deleted!</div>'));
+            return response()->json(['response'=>__('message.delete',['name'=>'user'])]);
         } catch (\Exception $e) {
             DB::rollBack();
               //Handle the exception
-            return response()->json(array(
-                'error'=>'<div class="alert alert-danger">An error occurred while deleting the data.'.
-                                $e->getMessage()
-                        .'</div>'));
+              return response()->json(['response'=>__('message.error.delete',['reason'=>$e->getMessage()])]);
+
         }
 
     }

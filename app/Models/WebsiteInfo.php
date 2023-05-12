@@ -8,6 +8,7 @@ use App\Helper\Select;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\File;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Storage;
 
 class WebsiteInfo extends Model
 {
@@ -22,30 +23,32 @@ class WebsiteInfo extends Model
 
     public $timestamps = false;
 
-    protected $hidden = ['secret_password'];
+    protected $hidden = ['secret_password','password'];
 
     protected $primaryKey='website_id';
 
-    public function getWebsiteNameAttribute($name){
-        return ucwords($name);
-    }
-    public function setWebsiteNameAttribute($name){
-        $this->attributes['website_name'] =ucwords($name);
-    }
-    public function getOwnerNameAttribute($name){
-        return ucwords($name);
+    public function websitename(): Attribute
+    {
+        return new Attribute(
+            get: fn ($value) => ucwords($value),
+            set: fn ($value) => ucwords($value),
+        );
     }
 
-    public function setOwnerNameAttribute($name){
-        $this->attributes['owner_name'] =ucwords($name);
+    public function ownername(): Attribute
+    {
+        return new Attribute(
+            get: fn ($value) => ucwords($value),
+            set: fn ($value) => ucwords($value),
+        );
     }
 
-    public function getOwnerAdressAttribute($name){
-        return ucwords($name);
-    }
-
-    public function setOwnerAddressAttribute($name){
-        $this->attributes['owner_address'] =ucwords($name);
+    public function ownerAddress(): Attribute
+    {
+        return new Attribute(
+            get: fn ($value) => ucwords($value),
+            set: fn ($value) => ucwords($value),
+        );
     }
 
     public function setWebsiteAddressAttribute($name){

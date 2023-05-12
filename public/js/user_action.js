@@ -89,7 +89,6 @@ function refreshTypingStatus(){
               },
               complete:function() {
                 $("#sender_msg").val('');
-                $('.chattimeago').timeago('update', new Date());
               },
             })
     });
@@ -98,7 +97,7 @@ function refreshTypingStatus(){
     $(document).on('click', '.rating-btn', function(){
       var data="Sorry you need to login to perform this action";
       var user_id= $(this).data('user_id');
-      if (user_id == ''|| !$.isNumeric(user_id))
+      if (!user_id|| !$.isNumeric(user_id))
       {
         showAlert(data);
         return false;
@@ -191,7 +190,7 @@ function refreshTypingStatus(){
           var sender_id= $(this).data('user_id');
           var url=$(this).data('url');
           var data="Sorry, You cannot follow yourself";
-          if (sender_id == ''|| !$.isNumeric(sender_id))
+          if (!sender_id|| !$.isNumeric(sender_id))
             {
               var data="Sorry you need to login to perform this action";
               showAlert(data);
@@ -224,7 +223,7 @@ function refreshTypingStatus(){
                      } ,
               success: function(data){
 
-                if ('error' in data && dat.error!="")
+                if ('error' in data && data.error)
                 {
                     showAlert(data.error);
                     $clickedbtn.text(r);

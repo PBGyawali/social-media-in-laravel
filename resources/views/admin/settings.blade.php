@@ -1,9 +1,8 @@
-
-<?= $__env->make('config', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render();
+@include('config')
+@include('admin_header')
+@include('admin_sidebar')
+<?php
 $row =$info;
-include_once(ADMIN_INCLUDES.'admin_header.php');
-include_once(ADMIN_INCLUDES.'admin_sidebar.php');
-$check=auth()->user();
 ?>
 <div class="d-flex flex-column " id="content-wrapper">
     <div id="content">
@@ -31,7 +30,7 @@ $check=auth()->user();
                     <!-- Tabs content -->
                     <div class="tab-content" id="ex1-content">
                         @include('profile_settings')
-                        
+
                         <?php  if($check->is_owner()):?>
                             <div class="tab-pane show" id="ex1-tabs-1" role="tabpanel" aria-labelledby="ex1-tab-1">
                             <form method="post" class="website form settings setting_form" id="website_form" enctype="multipart/form-data" action="<?= route('settings_update').'/'.$info->website_id; ?>">

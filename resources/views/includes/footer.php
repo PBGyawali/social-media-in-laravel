@@ -3,7 +3,7 @@
 
 <div id="messageModal" class="modal fade text-dark" data-backdrop="static">
   	<div class="modal-dialog modal-md">
-    	<form method="post" id="message_form" class="message_form no-close settings" action="<?= route('support')?>" enctype="multipart/form-data" >
+    	<form method="post" id="message_form" class="message_form no-close settings" action="<?= route('user.support')?>" enctype="multipart/form-data" >
       		<div class="modal-content">
         		<div class="modal-header bg-primary p-0">
           			<h4 class="modal-title text-white " id="modal_title">Send us offline Message</h4>

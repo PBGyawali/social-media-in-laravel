@@ -1,5 +1,5 @@
 <li class="dropdown" role="presentation">
-    <a data-toggle="dropdown" aria-expanded="false" class="cursor-pointer no-border p-0 m-0 bg-transparent"><span id="current_user"  class="d-none d-md-inline-block text-white"><?= $username?></span> <span id="user_uploaded_image_small" class="mt-0"><img src="<?= $profileimage; ?>" class="img-fluid rounded-circle" width="30" height="30"/></a></span>
+    <a data-toggle="dropdown" aria-expanded="false" class="cursor-pointer no-border p-0 m-0 bg-transparent"><span id="current_user"  class="d-none d-md-inline-block text-white"><?= auth()->user()->username?></span> <span id="user_uploaded_image_small" class="mt-0"><img src="<?= auth()->user()->profile_image; ?>" class="img-fluid rounded-circle profile_image" width="30" height="30"/></a></span>
             <div class="dropdown-menu dropdown-menu-right shadow animated zoomIn px-2 " role="menu">
                 <a class="dropdown-item" role="presentation" href="<?= route($side.'profile')?>"><i class="fas fa-id-badge fa-fw mr-2 text-gray-800"></i>&nbsp;Profile</a>
                 <a class="dropdown-item" role="presentation" href="<?= route($side.'password')?>"><i class="fas fa-key fa-fw mr-2 text-gray-800"></i>&nbsp;Password</a>

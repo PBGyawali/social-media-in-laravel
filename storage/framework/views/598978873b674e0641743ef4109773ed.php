@@ -1,0 +1,1 @@
+<a 	target="_blank" href="<?php echo e($link); ?>"><?php echo e($title); ?></a><?php /**PATH D:\Dropbox\UniServerZ\www\media\resources\views\components/link.blade.php ENDPATH**/ ?>

@@ -64,19 +64,19 @@ $(document).ready(function(){
         browserType = isOpera ? 'opera' : isSafari ? 'safari' : '';
     }
 
-    var postid=$('#views').val();
+    var postId=$('#views').val();
     var url=$('#postviews').attr('action');
     var userid=$('#loginid').val();
     var receiverid=$('#receiverid').val();
-    if (userid==""||!$.isNumeric(userid) )
+    if (!userid||!$.isNumeric(userid) )
         return false;
-    if (receiverid==""||!$.isNumeric(receiverid) )
+    if (!receiverid||!$.isNumeric(receiverid) )
         return false;
     $.ajax({
         url: url,
           method: 'post',
           data: {
-            post_id:postid,
+            post_id:postId,
             browser:browserType,
             user_id:receiverid
                 },

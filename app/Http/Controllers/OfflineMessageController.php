@@ -18,46 +18,37 @@ class OfflineMessageController extends Controller
     public function index(Request $request)
     {
         $id=auth()->id();
-        $messageid=$request->id?$request->id:$id;
-        $logged_message=$messages=Helper::messages($id);
-        $alerts=Helper::alerts($id);
-        $log_username=$usermessages=$useralerts='';
+        $messageid=$request->id??$id;
+        $logged_username=$usermessages='';
         if($messageid!=$id){
-           $logged_user=User::find($messageid);
+            $logged_user=User::find($messageid);
             if($logged_user){
-                $log_username= $logged_user->username;
-                $logged_message=Helper::messages($messageid);
+                $logged_username= 'for '.$logged_user->username;
             }
         }
-        $messagecount=OfflineMessage::user_id($id)->read()->count();
-        $alertcount=Alert::user_id($id)->read()->count();
-        $info=$page='messages';
+
+        $page='messages';
         $view='admin.allmessages';
         if($request->route()->named('user.messages')){
             $view=$page;
-            $info=WebsiteInfo::first();
+            $messageid=$id;
         }
-        return view($view,compact('messages','page','alertcount',
-        'alerts','messagecount','info','log_username','logged_message'));
+        $logged_message=Helper::messages($messageid);
+        return view($view,compact('page',
+       'logged_message','logged_username'));
     }
 
 
     public function create(Request $request)
     {
         $id=auth()->id();
-        $user_id=$request->message_id?$request->message_id:$id;
+        $user_id=$request->message_id??$id;
         $user=User::find($user_id);
-        $messages=Helper::get_conversation($id);
-        $messagecount=OfflineMessage::user_id($id)->read()->count();
-        $alertcount=Alert::user_id($id)->read()->count();
-       $alerts=Helper::alerts($id);
         $chat_data=Helper::all_chat_data($user_id,$id);
         $page=$view='conversation';
-        $info=WebsiteInfo::first();
         $topics=Topic::all();
         $user_data=User::all();
-        return view($view,compact('messages','page','alertcount','alerts',
-        'messagecount','info','user_data','chat_data','topics','id','user'));
+        return view($view,compact('page','user_data','chat_data','topics','id','user'));
     }
 
 
@@ -104,7 +95,8 @@ class OfflineMessageController extends Controller
 
         OfflineMessage::find($request->id)->update([$key=>$value]);
         $count=$this->show();
-        return response()->json(array('response'=>$count));
+        return response()->json(array('messagecount'=>$count));
+
     }
 
 
@@ -122,6 +114,7 @@ class OfflineMessageController extends Controller
            break;
        }
         $count=$this->show();
-        return response()->json(array('count'=>$count,'delete'=>$request->id));
+        return response()->json(array('messagecount'=>$count,'count'=>$count,'delete'=>$request->id));
+      
     }
 }

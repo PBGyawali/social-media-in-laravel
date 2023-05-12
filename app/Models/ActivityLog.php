@@ -4,12 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Kirschbaum\PowerJoins\PowerJoins;
+
 
 class ActivityLog extends Model
 {
     use HasFactory;
-    use PowerJoins;
 
     protected $perPage = 20;
 
@@ -50,11 +49,11 @@ class ActivityLog extends Model
         elseif (in_array($type,(array_slice($activitytypes,2,2)))) $iconclass=' text-success ';
         elseif (in_array($type,(array_slice($activitytypes,4,2)))) $iconclass=' text-danger ';
         elseif (in_array($type,(array_slice($activitytypes,6,4)))) $iconclass=' text-secondary ';
-        foreach($activitytypes as $key=> $activitytype)
-            if($type== $activitytype)
-                break;
+        $key = array_search($type, $activitytypes);
         return $icontype[$key].$iconclass;
     }
+
+
 
 }
 

@@ -5,7 +5,7 @@
     </button>
     <?php endif; ?>
     <?php if(in_array('update', $buttons)): ?>
-    <button type="button" class="btn btn-primary mb-1 btn-sm update" data-prefix="<?php echo e(ucwords($prefix)); ?>" data-id="<?php echo e($id); ?>"><i class="fas fa-eye"></i></button>
+    <button type="button" class="btn btn-primary mb-1 btn-sm update" data-target="<?php echo e($target??''); ?>" data-prefix="<?php echo e(ucwords($prefix)); ?>" data-id="<?php echo e($id); ?>"><i class="fas fa-eye"></i></button>
     <?php endif; ?>
     <?php if(in_array('delete', $buttons)): ?>
       <button type="button"  class="btn btn-danger btn-sm border delete"  data-action="delete" title="Delete <?php echo e($prefix); ?> data" data-id="<?php echo e($id); ?>">

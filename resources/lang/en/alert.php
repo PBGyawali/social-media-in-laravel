@@ -22,5 +22,16 @@ return [
     'warning' => "We can't find a user with that email address.",
     'update' => 'You updated your ',
     'delete' => 'You deleted your',
+    'error' => [
+        'date' => 'Start date range needs to be selected',
+        'admin_action' => 'reset the profile account password',
+        'admin_view' => 'delete the data',
+        'admin_view' => 'reset the profile account password',
+        'admin_view' => 'change the status',
+        'admin_view' => 'change the status',
+        'admin_view' => 'change the status',
+        'admin_view' => 'change the status',
+    ],
+
 
 ];

@@ -1,11 +1,11 @@
-<?php  echo $__env->make('config', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render();
-include_once(ADMIN_INCLUDES.'admin_header.php');
-include_once(ADMIN_INCLUDES.'admin_sidebar.php');
-?>
+<?php echo $__env->make('config', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php echo $__env->make('admin_header', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php echo $__env->make('admin_sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 	        	<?php echo $__env->make('message', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 	            <div class="card">
 	            	<div class="card-header">
-						<?php echo $__env->make('header_card',['element'=>'user','buttonicon'=>'user-plus','exporturl'=>route('user')], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+						<?php echo $__env->make('header_card',['element'=>'user','buttonicon'=>'user-plus',
+                        'exporturl'=>route('user.csv',['from_date'=>':from_date','to_date'=>':to_date'])], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 						<div class="row">
 	            			<div class="col text-center font-weight-bold">
 							Hide Chosen Row
@@ -51,7 +51,7 @@ include_once(ADMIN_INCLUDES.'admin_sidebar.php');
 		          	</div>
         		</div>
         		<div class="modal-footer">
-          			<input type="submit"  id="verify_button" class="btn btn-success" value="Approve" />
+          			<button type="submit"  id="verify_button" class="btn btn-success" value="Approve" >Approve</button>
           			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         		</div>
       		</div>
@@ -108,6 +108,17 @@ include_once(ADMIN_INCLUDES.'admin_sidebar.php');
 			            	</div>
 			            </div>
 		          	</div>
+					  <div class="form-group">
+						<div class="row">
+						  <label class="col-md-4 text-right">sex</label>
+						  <div class="col-md-8">							 
+							  <input type="radio" name="sex" id="" value="male">male
+							  <input type="radio" name="sex" id="" value="female">female
+							  <input type="radio" name="sex" id="" value="other">other
+							  <input type="radio" name="sex" id="" value="not mentioned">not mentioned
+						  </div>
+					  </div>
+					</div>
 		          	<div class="form-group">
 		          		<div class="row">
 			            	<label class="col-md-4 text-right">User_type</label>
@@ -124,7 +135,7 @@ include_once(ADMIN_INCLUDES.'admin_sidebar.php');
 		          	</div>
         		</div>
         		<div class="modal-footer">
-          			<input type="submit"  id="submit_button" class="btn btn-success" value="Add" />
+                    <button type="submit" class="btn btn-success" value="Approve" >Add</button>
           			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         		</div>
       		</div>
@@ -154,7 +165,7 @@ include_once(ADMIN_INCLUDES.'admin_sidebar.php');
 					  </div>
         		</div>
         		<div class="modal-footer">
-          			<input type="submit"  id="action_submit_button" class="btn btn-success" value="Disable" />
+                    <button type="submit" class="btn btn-success" value="Approve" >Disable</button>
           			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         		</div>
       		</div>
@@ -163,5 +174,6 @@ include_once(ADMIN_INCLUDES.'admin_sidebar.php');
 </div>
 <?php echo $__env->make('footer_script', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
+<link href="https://cdn.datatables.net/v/bs4/dt-1.13.4/r-2.4.1/datatables.min.css" rel="stylesheet"/>
 
 <?php /**PATH D:\Dropbox\UniServerZ\www\media\resources\views/admin/userlist.blade.php ENDPATH**/ ?>

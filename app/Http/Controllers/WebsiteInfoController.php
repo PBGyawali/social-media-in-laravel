@@ -135,7 +135,7 @@ class WebsiteInfoController extends Controller
 
         // Log out the current user and return a JSON response with a success message and a redirect URL
         Auth::logout();
-        return response()->json(array('redirect'=>route("heading").'#login','response'=>'<div class="alert alert-success">Details Created Successfully. Please login </div>'));
+        return response()->json(['response'=>__('message.first_create'),'redirect'=>route("heading").'#login']);        
     }
 
   
@@ -180,7 +180,8 @@ class WebsiteInfoController extends Controller
         session(['website_name' => ucwords($request->website_name)]);
 
         // Return a JSON response indicating success
-        return response()->json(array('response'=>'<div class="alert alert-success">Details Updated Successfully</div>'));
+        return response()->json(['response'=>__('message.detail_update')]);
+        
     }
 
 

@@ -1,7 +1,4 @@
- <?php
-$username=auth()->user()->username;
-$profileimage=auth()->user()->profile_image;
-?>
+
 <div class="container d-none d-sm-block">
     <div class="row">
         <div class=" col xs-0 col sm-0 col-md-12">
@@ -55,7 +52,7 @@ $profileimage=auth()->user()->profile_image;
                                 <div class="row">
                                     <div class="col h-40 ">
                                             <div ><i class="fas fa-comment chatboxicon p-0"></i> Support: </div>
-                                            <span class="usermessage">Hello <?= $username?>. What can we do for you?</span>
+                                            <span class="usermessage">Hello <?= $username??auth()->user()->username?>. What can we do for you?</span>
                                             <p><span class="usermessagedate" id="usermessagedate"></span></p>
                                             <span id="typing_on"></span>
                                     </div>
@@ -73,8 +70,8 @@ $profileimage=auth()->user()->profile_image;
                                         <i class="fa fa-paper-plane"></i></button>
                                     </div>
                             </div>
-                            <input type="hidden"id="chat_username" value ="<?= $username?>">
-                            <input type="hidden"id="imagesource" value ="<?= $profileimage; ?>">
+                            <input type="hidden"id="chat_username" value ="<?= $username??auth()->user()->username?>">
+                            <input type="hidden"id="imagesource" value ="<?= $profileimage??auth()->user()->profile_image; ?>">
                             <div id="validation_error"></div>
                         </form>
                     </div><!-- end of 2nd tab div content -->

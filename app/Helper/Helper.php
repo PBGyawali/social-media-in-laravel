@@ -135,17 +135,12 @@ class Helper
 
     static function activitylogs($user_id, $text,$type=null,$object=null,$parent_id=null,$parent_text=null,$child_text=null)
     {
-		$keys=array('user_id', 'type','activity_object','parent_activity_id',
+		$keys=array('user_id','type','activity_object','parent_activity_id',
         'parent_activity_text','child_activity_text');
-        $values=array($user_id, $type,$object,$parent_id,$parent_text,$child_text);
+        $values=array($user_id,$type, $object,$parent_id,$parent_text,$child_text);
         $data=array_combine($keys, $values);
         ActivityLog::create($data);
 	}
-
-    static function get_datetime()
-	{
-		return date("Y-m-d H:i:s",  STRTOTIME(date('h:i:sa')));
-    }
 
     static function format_number($number) {
 
@@ -239,11 +234,45 @@ class Helper
     }
         static function messages($id){
             //$id=999;
+            $latestMessages = OfflineMessage::join(
+                DB::raw('(SELECT MAX(sent_on) AS sent_on, 
+                            CASE WHEN user_id = ? THEN sender_id ELSE user_id END AS conversation_id
+                         FROM offline_messages
+                         WHERE user_id = ? OR sender_id = ?
+                         GROUP BY conversation_id) AS Latest'),
+                function($join) use($id) {
+                    $join->on('offline_messages.sent_on','=','Latest.sent_on')
+                         ->on(function($query) use($id) {
+                             $query->where('offline_messages.user_id', $id)
+                                   ->where('offline_messages.sender_id', '=', DB::raw('Latest.conversation_id'))
+                                   ->orWhere('offline_messages.sender_id', $id)
+                                   ->where('offline_messages.user_id', '=', DB::raw('Latest.conversation_id'));
+                         });
+                })
+                ->leftJoin('message_log', function($join) {
+                    $join->on('Latest.conversation_id', '=', 'message_log.id');
+                })
+                ->leftJoin('users', function($join) {
+                    $join->on('Latest.conversation_id', '=', 'users.id');
+                })
+                ->select('*', 'latest.conversation_id as sender_id','offline_messages.id as id', 'users.username as username', 'users.profile_image as profile_image')
+                ->orderBy('offline_messages.sent_on', 'DESC')
+                ->limit(5)
+                ->setBindings([$id, $id, $id])
+                ->paginate();
+            
+//dd($latestMessages);
+                return $latestMessages;
+
             return OfflineMessage::user_id($id)
+            ->orWhere('sender_id', $id)
             ->leftjoin('users','users.id','offline_messages.sender_id')
             ->limit(5)
             ->latest('offline_messages.sent_on')
+            ->select('*','offline_messages.id as id')
             ->paginate();
+
+  
         }
 
         static function alerts($id){

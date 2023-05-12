@@ -6,16 +6,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
-use Kirschbaum\PowerJoins\PowerJoins;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Carbon\Carbon;
 
-class User extends Authenticatable
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+//use Illuminate\Database\Eloquent\Casts\Attribute;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use App\Traits\UserTrait;
+
+class User extends Authenticatable //implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
 
-    use PowerJoins;
+    
+
+    use UserTrait;
 
     protected $fillable = ['username','email','password','sex',
     'profile_image','user_type','facebook','first_name','last_name','twitter','googleplus'];
@@ -41,7 +48,7 @@ class User extends Authenticatable
         }
     }
 
- 
+
     public function getFacebookAttribute($value){
         return htmlspecialchars($value);
     }
@@ -50,28 +57,8 @@ class User extends Authenticatable
     }
     public function getGoogleplusAttribute($value){
         return htmlspecialchars($value);
-    }
+    }    
 
-
-    public function username(): Attribute
-    {
-        return new Attribute(
-            get: fn ($value) => ucwords($value),
-            set: fn ($value) => ucwords($value),
-        );
-    }
-
-
-    public function getFirstNameAttribute($value){
-        return ucwords($value);
-    }
-    public function getLastNameAttribute($value){
-        return ucwords($value);
-    }
-    public function getFullNameAttribute()
-    {
-       return ucwords($this->first_name) . ' ' . ucwords($this->last_name);
-    }
     public function getLastLogoutAttribute($value){
         return date("d-m-Y H:i",strtotime($value));
     }
@@ -80,21 +67,13 @@ class User extends Authenticatable
         return Carbon::parse($value)->diffForHumans();
     }
     public function getLastActiveAttribute(){
-        return date("d-m-Y H:i",strtotime($this->last_logout>$this->last_login_attempt?$this->last_logout:$this->last_login_attempt));
+        return date("d-m-Y H:i", strtotime(max($this->last_logout, $this->last_login_attempt)));
     }
 
     public function getCreatedAtAttribute($value){
         return date("d-m-Y ",strtotime($value));
     }
 
-    public function getProfileImageAttribute($value){
-        if(is_dir(config('app.user_images_path').$value)
-        ||  !file_exists(config('app.user_images_path').$value))
-        //retun the base directory for user images plus image name
-                return config('app.user_images_url').'user_profile.png';
-        else
-                return config('app.user_images_url').$value;
-    }
 
     public function posts()
     {
@@ -141,35 +120,33 @@ class User extends Authenticatable
     }
 
     function is_active(){
-        return $this->userlog->user_status=='Enable' ? true : ($this->userlog->user_status=='active'?true:false);
+        return in_array(strtolower($this->userlog->user_status), ['enable','active']);
     }
     function is_verified(){
-        return $this->userlog->verified=='yes' ? true : ($this->userlog->verified=='active'?true:false);
+        return in_array(strtolower($this->userlog->verified), ['yes','active']);
     }
     function is_email_verified(){
-        return $this->userlog->email_status=='active' ? true : false;
+        return strtolower($this->email_status)=='active';
     }
 
     function is_user(){
-        return $this->user_type=='user' ? true : false;
+        return strtolower($this->user_type)=='user';
     }
     function is_editor()	{
-        return $this->user_type=='editor'?true:($this->user_type=='admin'?true:($this->user_type=='owner'?true:false) ) ;
+        return in_array(strtolower($this->user_type), ['editor','owner', 'admin', 'master']);
 	}
-	 function is_admin()	{
-        return $this->user_type=='admin'?true:($this->user_type=='owner'?true:false) ;
-    }
+
+    function is_admin()	{
+        return in_array(strtolower($this->user_type), ['owner', 'admin', 'master']);
+	}
 
     function is_owner()	{
-        return $this->user_type=='owner'?true:false;
-    }
-    function is_same_user($data)	{
-        return $data==$this->id ? true : false;
+        return $this->user_type=='owner';
     }
 
-    function has_no_image()	{
-        return basename($this->profile_image)=='user_profile.png'? true :false;
-    }
+    function is_master()	{
+        return in_array(strtolower($this->user_type), ['master']);
+	}
 
     public function isAdmin()
     {
@@ -177,8 +154,21 @@ class User extends Authenticatable
     }
 
     function is_master_admin()	{
-        return $this->is_admin();
+        return $this->is_master();
     }
+
+    function is_same_user($data){
+        if ($data instanceof Model) {
+            return $this->is($data);
+        }
+        return $data==$this->id;
+    }
+
+    function has_no_image()	{
+        return basename($this->profile_image)=='user_profile.png';
+    }
+
+
 
 
 

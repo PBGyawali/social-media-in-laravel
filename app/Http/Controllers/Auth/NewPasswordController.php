@@ -52,8 +52,6 @@ class NewPasswordController extends Controller
                     'password' => $request->password,
                     'remember_token' => Str::random(60),
                 ])->save();
-
-             event(new PasswordReset($user));
             }
         );
 
@@ -61,14 +59,6 @@ class NewPasswordController extends Controller
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.
         if($status == Password::PASSWORD_RESET){
-            Helper::activitylogs($this->user_id, 'You performed reset of your ','reset','password');
-            
-           Alert::create([
-            'user_id' => $this->user_id,
-            'alert' => trans('alert.password_reset'),
-            'type' => 'info',
-        ]);
-
                 return  redirect()->route('login')->with('success', __($status)) ;
         }
         else

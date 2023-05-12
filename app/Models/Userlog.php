@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Kirschbaum\PowerJoins\PowerJoins;
+
 use Carbon\Carbon;
 class Userlog extends Model
 {
     use HasFactory;
-    use PowerJoins;
+    
 
     protected $primaryKey='user_id';
 
@@ -35,10 +35,10 @@ class Userlog extends Model
         return $this->belongsTo(User::class);
     }
 
+   
     public function getLastActiveAttribute(){
-        return date("d-m-Y H:i",strtotime($this->last_logout>$this->last_login_attempt?$this->last_logout:$this->last_login_attempt));
+        return date("d-m-Y H:i", strtotime(max($this->last_logout, $this->last_login_attempt)));
     }
-
     public function getLastLogoutAttribute($name){
         return date("d-m-Y H:i",strtotime($name));
     }

@@ -1,7 +1,7 @@
 @include('config')
 @include('minimal_header')
+@include('sidebar');
 <?php
-include(INCLUDES.'sidebar.php');
 $user_id=auth()->id();
 ?>
 <div class="col-sm-12 offset-xs-3 mr-5 px-0">
@@ -30,5 +30,5 @@ $user_id=auth()->id();
 @include('minimal_footer')
 <input type="hidden" name="" id="ajaxurl" value="<?= route('user.messages')?>">
 <script type="text/javascript" src="{{JS_URL.'notification.js'}}"></script>
-<?php include_once (INCLUDES .'footer.php') ?>
+@include('footer')
 @include('footer_script')

@@ -1,9 +1,6 @@
-<?php
-echo $__env->make('config', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render();
-include_once(ADMIN_INCLUDES.'admin_header.php');
-include_once(ADMIN_INCLUDES.'admin_sidebar.php');
-$logged_username=(isset($logged_username)&&!empty($logged_username))?'for '. $logged_username:'';
-?>
+@include('config')
+@include('admin_header')
+@include('admin_sidebar')
    <div class="d-flex flex-column " id="content-wrapper">
         <div id="content">
             <div class="container-fluid ">

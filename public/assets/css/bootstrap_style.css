@@ -1,0 +1,102 @@
+body {
+    overflow-x: hidden;
+}
+html, body{
+  width:100%;
+  min-height: 100%;
+  height: auto !important;
+  height:100%; }
+
+.bg-dark {
+    background-color: rgb(39, 39, 39)!important;
+}
+#sidebar li
+{
+    border-top: 1px solid #f9f9f9;
+}
+#sidebar li:last-child
+{
+    border-bottom: 1px solid #f9f9f9;
+}
+
+#sidebar li:first-child
+{
+    border-top: none;
+}
+
+#sidebar li a, .dropdown-btn
+{
+    color: rgb(178, 137, 253);
+    width: 100%;
+}
+
+
+#sidebar li a:hover,.dropdown-btn:hover{
+  background-color: rgb(218, 119, 5);
+	color: white;
+}
+
+  .dropdown-container {
+	display: none;
+  }
+  .dropdown-container a{
+    padding: 0px;
+  }
+
+.active_class, .active_page
+{
+    background-color: green!important;
+	color: white!important;
+}
+.inactive_page,.inactive_class{
+    color:#fff;
+}
+
+.active_class,.inactive_class{
+    line-height: 40px;
+}
+/*dashboard*/
+div.card.stats a {  color:white;}
+a:hover {  text-decoration: none; }
+div.card{cursor:pointer;}
+
+div.stats:hover a ,  div.stats:hover {
+    background-color: #3a032e!important;
+    color:yellow!important;
+    cursor: pointer;
+    transform: translateY(-10px);
+}
+
+
+/*profile*/
+button#facebook.fa-facebook{
+    background: white;
+    border-radius: 5px;
+    color:#4267B2;
+  }
+  button#twitter.fa-twitter {
+    background: #00acee!important;
+    color:white;
+    border-radius: 5px;
+    }
+    button#google-plus.fa-google-plus {
+    background: #db4a39;
+    color:white;
+    border-radius: 5px;
+  }
+
+  @media screen and (max-width: 650px) {
+    h1{
+      font-size: 1.25rem;
+  }
+
+  .active_class,.inactive_class{
+    line-height: 10px;
+}
+
+  }
+
+
+
+
+

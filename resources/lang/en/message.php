@@ -7,55 +7,30 @@ return [
     | response Language Lines
     |--------------------------------------------------------------------------
     |
-    | The following language lines contain the default error messages used by
-    | the validator class. Some of these rules have multiple versions such
-    | as the size rules. Feel free to tweak each of these messages here.
+    | The following language lines contain the default response messages
     |
     */
 
-    'update' => '<div class="alert alert-success">The data was updated!</div>',
-    'delete' => '<div class="alert alert-success">The data was deleted!</div>',
-    'store' => '<div class="alert alert-success">The data was stored!</div>',
-    'sent' => '<div class="alert alert-success">The message was sucessfuly sent. We will reply you as soon as possible</div>',
-    'create' => '<div class="alert alert-success">The user data was created!</div>',   
-    'alpha_num' => '<div class="alert alert-success">Details Updated Successfully</div>',
-    'first_create' => '<div class="alert alert-success">Details Created Successfully. Please login </div>',    
+    'update' => 'The :Name data was updated!',
+    'delete' => 'The :Name data was deleted!',
+    'store' => 'The :Name data was stored!',
+    'sent' => 'The message was sucessfuly sent. We will reply you as soon as possible',
+    'create' => 'The :Name data was created!',
+    'upload' => 'The :Name data was sucessfuly uploaded.',
+    'detail_update' => 'Details Updated Successfully',
+    'first_create' => 'Details Created Successfully. Please login ',
+    'password' => 'The user password was updated!Please Re-login ',
+    'sent' => 'The message was sucessfuly sent. We will reply you as soon as possible',
+    'follow' => 'The user has been :action!',
+    'secret'=>'Authorization Required. Please confirm with your current password and the company\'s secret password before continuing.',
     'error' => [
-        'delete' => '<div class="alert alert-danger">An error occurred while deleting the data. :reason</div>',
-        'admin_action' => '<div class="alert alert-danger alert-dismissible fade show"> You must be an admin to perform this action <button type="button" onclick="hide()">&times;</button></div>',
+        'delete' => 'An error occurred while deleting the data. :reason',
+        'create' => 'An error occurred while storing the data. :reason',
+        'update' => 'An error occurred while updating the data. :reason',
+        'admin_user' => 'Admins cannot be deleted.',
+        'admin_action' => 'You must be an admin to perform this action',
         'admin_view' => 'You must be an admin to view this page!',
-        'array' => 'The :attribute must have at least :min items.',
     ],
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | Custom Validation Language Lines
-    |--------------------------------------------------------------------------
-    |
-    | Here you may specify custom validation messages for attributes using the
-    | convention "attribute.rule" to name the lines. This makes it quick to
-    | specify a specific custom language line for a given attribute rule.
-    |
-    */
-
-    'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
-        ],
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Custom Validation Attributes
-    |--------------------------------------------------------------------------
-    |
-    | The following language lines are used to swap our attribute placeholder
-    | with something more reader friendly such as "E-Mail Address" instead
-    | of "email". This simply helps us make our message more expressive.
-    |
-    */
-
-    'attributes' => [],
 
 ];

@@ -40,7 +40,7 @@ class CommentController extends Controller
                 'type' => 'comment',
             ];
             Alert::create($alertData);
-        }            
+        }
      }
 
     public function update(Request $request)
@@ -70,7 +70,7 @@ class CommentController extends Controller
         $comment = Comment::find($request->id);
 
         // Delete all associated replies to the comment
-        $comment->replies->each->delete();
+        $comment->replies()->delete();
 
         // Delete the comment itself
         $comment->delete();
@@ -84,5 +84,5 @@ class CommentController extends Controller
         // Return the count of remaining comments as a JSON response
         return response()->json(array('response'=>$commentsCount));
     }
-   
+
 }

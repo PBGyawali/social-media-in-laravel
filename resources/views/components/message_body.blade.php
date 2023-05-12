@@ -11,10 +11,10 @@
                                     <a class="d-flex align-items-center dropdown-item mt-3" href="<?= route('conversation',$chat->sender_id); ?>" style="white-space: normal;cursor:pointer;">
                                         <div class="text-left ">
                                             <div class="">
-                                                <span> <p class=""><?= $chat->message;?></p></span>
+                                                <span> <p class=""><?= ($user_id==$chat->sender_id?:'You:' ).$chat->message;?></p></span>
                                             </div>
                                             <span class="">
-                                                <span class="small mb-0  font-weight-bold"><?= ($user_id==$chat->sender_id)?'You':$chat->username;?></span>
+                                                <span class="small mb-0  font-weight-bold"><?= $chat->username;?></span>
                                                 <p class="small mb-0 d-inline">-<?= $chat->sent_on; ?></p>
                                             </span>
                                         </div>

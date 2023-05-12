@@ -2,7 +2,7 @@
     <div class="card-body">
         <div class="row no-gutters align-items-center">
             <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-<?php echo e($class??'success'); ?> text-uppercase mb-1">
+                <div class="text-sm font-weight-bold text-<?php echo e($class??'success'); ?> text-uppercase mb-1">
                      <?php echo e($title??'No title'); ?>
 
                 </div>

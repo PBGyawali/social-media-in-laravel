@@ -1,6 +1,6 @@
 @include('config')
-    @include('minimal_header')
-        @include('sidebar')
+@include('minimal_header')
+@include('sidebar')
         <link rel="stylesheet" href="<?= CSS_URL?>aboutus.css">
 <link rel="stylesheet" href="<?= CSS_URL?>animate.css">
 </head>
@@ -65,66 +65,10 @@
 
 </div>
 <!-- Background Slides -->
-<div id="maximage">
-    <div>
-        <img class="img-fluid"src="<?= BACKGROUNDS_URL?>bg-img-1.jpg" alt="" />
-        <img class="gradient img-fluid" src="<?= BACKGROUNDS_URL?>gradient.png" alt="" />
-    </div>
-    <div>
-        <img class="img-fluid"src="<?= BACKGROUNDS_URL?>bg-img-2.jpg" alt="" />
-        <img class="gradient img-fluid" src="<?= BACKGROUNDS_URL?>gradient.png" alt="" />
-    </div>
-    <div>
-        <img class="img-fluid" src="<?= BACKGROUNDS_URL?>bg-img-3.jpg" alt="" />
-        <img class="gradient img-fluid" src="<?= BACKGROUNDS_URL?>gradient.png" alt="" />
-    </div>
-    <div>
-        <img class="img-fluid" src="<?= BACKGROUNDS_URL?>bg-img-4.jpg" alt="" />
-        <img class="gradient img-fluid" src="<?= BACKGROUNDS_URL?>gradient.png" alt="" />
-    </div>
-    <div>
-        <img class="img-fluid"src="<?= BACKGROUNDS_URL?>bg-img-5.jpg" alt="" />
-        <img class="gradient  img-fluid" src="<?= BACKGROUNDS_URL?>gradient.png" alt="" />
-    </div>
-</div>
 
-    @include('minimal_footer')
-<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js'></script>
-<script src="<?= JS_URL?>jquery.cycle.all.js" type="text/javascript" charset="utf-8"></script>
-<script src="<?= JS_URL?>jquery.maximage.js" type="text/javascript" charset="utf-8"></script>
+
+@include('minimal_footer')
+
 <script src="<?= JS_URL?>main.js" type="text/javascript" charset="utf-8"></script>
-<script type="text/javascript" charset="utf-8">
-
-$(function(){
-	$('#maximage').maximage({
-		cycleOptions: {
-		fx: 'fade',
-		speed: 1000, // Has to match the speed for CSS transitions in about.css (lines 48 - 71)
-		timeout: 5000,
-		prev: '#arrow_left',
-		next: '#arrow_right',
-		pause: 0,
-		before: function(last,current){
-			if(!$.browser.msie){
-				// Start HTML5 video when you arrive
-				if($(current).find('video').length > 0) $(current).find('video')[0].play();
-			}
-		},
-			after: function(last,current){
-				if(!$.browser.msie){
-					// Pauses HTML5 video when you leave it
-					if($(last).find('video').length > 0) $(last).find('video')[0].pause();
-				}
-			}
-		},
-		onFirstImageLoaded: function(){
-			$('#maximage').fadeIn('fast');
-			}
-	});
-	// Helper function to Fill and Center the HTML5 Video
-	$('video,object').maximage('maxcover');
-});
-</script>
-<script type="text/javascript" src="<?= JS_URL.'parsley.min.js'?>"></script>
-<?php include_once ( INCLUDES .'footer.php') ?>
+@include('footer')
 @include('footer_script')
