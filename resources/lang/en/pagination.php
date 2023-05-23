@@ -14,6 +14,13 @@ return [
     */
 
     'previous' => '&laquo; Previous',
+    'simple-previous' => '&laquo;',
     'next' => 'Next &raquo;',
+    'simple-next' => '&raquo;',
+    'loading' => 'Loading more posts...',
+    'no-loading' => 'No more posts available...',
+    'not-found' => 'No posts found...',
+    'be-first' => 'Be the first to comment on this post',
+    'simple-next' => '&raquo;',
 
 ];
