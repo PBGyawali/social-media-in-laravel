@@ -27,12 +27,11 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
-        $info=WebsiteInfo::first();
         // all month names of past 12 month
         $fullmonth=$this->fullmonth();
         $fullmonthvalue=$this->fullmonthvalue();
         // limited month names since start of the year
-        $month=$this->month();        
+        $month=$this->month();
         $monthvalue=$this->monthvalue();
         Helper::AllVisitCount(true);
         $progresspoints=Helper::progress_points();
@@ -41,17 +40,11 @@ class DashboardController extends Controller
         $UserUnpublishedPosts=$this->UserUnPublishedPosts();
         $totalpostviews=$this->totalpostviews();
         $topics=Topic::all();
-        $id=auth()->id();
-        $messages=Helper::messages($id);
-        $messagecount=OfflineMessage::user_id($id)->read()->count();
-        $alertcount=Alert::user_id($id)->read()->count();
-        $alerts=Helper::alerts($id);
         $page='dashboard';
-        return view('dashboard',compact('info','page',
+        return view('dashboard',compact('page',
         'progresspoints',
         'fullmonthvalue','fullmonth','month','monthvalue','follow_requests',
-        'UserPublishedPosts','UserUnPublishedPosts','totalpostviews','topics'
-        ,'messages','messagecount','alertcount','alerts'
+        'UserPublishedPosts','UserUnpublishedPosts','totalpostviews','topics'
         )
         );
     }
@@ -76,15 +69,16 @@ class DashboardController extends Controller
         $AllVisitCount= Helper::AllVisitCount();
         $target=$this->usertarget();
         $visitor_sources=$this->visitor_sources();
-        $id=auth()->id();
-        $visitor_sources_count=$this->visitor_sources_count();        
+        $visitor_sources_count=$this->visitor_sources_count();
         $page='dashboard';
         return view('admin.index',compact('page',
+       'UserUnpublishedPosts',
+       'AllUnpublishedPosts','AllUnresolvedTickets',
             'progresspoints',
             'fullmonthvalue','fullmonth','month','monthvalue','follow_requests',
-            'UserPublishedPosts','UserUnPublishedPosts','totalpostviews',   'AllUsers',
-            'AllPublishedPosts','AllUnPublishedPosts','UnverifiedEmail','UnverifiedProfile',
-            'AllUnResolvedTickets','AllVisitCount','target','visitor_sources','visitor_sources_count'
+            'UserPublishedPosts','totalpostviews',   'AllUsers',
+            'AllPublishedPosts','UnverifiedEmail','UnverifiedProfile',
+            'AllVisitCount','target','visitor_sources','visitor_sources_count'
             )
         );
     }
@@ -166,7 +160,7 @@ class DashboardController extends Controller
     }
 
     function loopfullmonth($quote=null)
-	{	
+	{
         $value=array();
 		$startpos = date('n');
 		for($i=1;$i<=12;$i++)
@@ -292,7 +286,7 @@ class DashboardController extends Controller
         $value= Helper::CountTable($table,$condition,$value,$compare,$attr);
         return Helper::format_number($value);
      }
-     
+
     function total($table=null,$column=null,$placeholder=null,$value=null,$join=array(),$attr=array()){
             $value=Helper::total($table,$column,$placeholder,$value,$join,$attr);
             return Helper::format_number($value);

@@ -40,7 +40,7 @@ class PasswordResetLinkController extends Controller
         // this is a test key. replace with original in production
         $recaptcha_secret_key = '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe';
         $recaptcha_response_token = $request->input('g-recaptcha-response');
-        
+
         if (!$recaptcha_response_token)
             return back()->withInput($request->only('email'))
             ->withErrors(['reset_email' => 'Recaptcha verification not found']);

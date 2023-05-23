@@ -9,6 +9,8 @@ use App\Helper\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Queue;
+use App\Jobs\ProcessComment;
 
 class CommentController extends Controller
 {
@@ -18,7 +20,7 @@ class CommentController extends Controller
     {
         $check=auth()->user();
         $comment=Comment::create($request->all());
-	    $inserted_id = $comment->id;
+	    $inserted_id = $comment->getKey();
         $comment->username=$username=$comment->user->username;
         $comment->profile_image=basename($comment->user->profile_image);
         $comment_text=$comment->body;
@@ -27,10 +29,11 @@ class CommentController extends Controller
         $post_id=$request->post_id;
         $display=true;
         $commentsCount=Comment::posts($post_id)->count();
+        $user_id=$check->getKey();
         $html=view('comments',compact('comment','check','display'))->render();
         $comment_info = array("comment" => $html,"comments_count" => $commentsCount);
-        // use eco instead return so that user gets response while we do our task in background
-        echo json_encode($comment_info);
+        // use echo instead return so that user gets response while we do our task in background
+       echo json_encode($comment_info);
         Helper::activitylog($user_id, "comment","post",$request->post_id,$title,$comment_text);
         if(!$check->is_same_user($receiver_id)){
             $alertData = [
@@ -40,7 +43,8 @@ class CommentController extends Controller
                 'type' => 'comment',
             ];
             Alert::create($alertData);
-        }            
+        }
+     
      }
 
     public function update(Request $request)
@@ -52,7 +56,7 @@ class CommentController extends Controller
        $comment=Comment::withuserdata()->find($request->id);
        $comment->update($request->only('body'));
        $html=view('comment_info',compact('comment','check'))->render();
-       return response()->json(['response'=>$html]);
+       return response()->json(['comments'=>$html]);
     }
 
 
@@ -70,7 +74,7 @@ class CommentController extends Controller
         $comment = Comment::find($request->id);
 
         // Delete all associated replies to the comment
-        $comment->replies->each->delete();
+        $comment->replies()->delete();
 
         // Delete the comment itself
         $comment->delete();
@@ -82,7 +86,7 @@ class CommentController extends Controller
         $commentsCount=Comment::posts($request->post_id)->count();
 
         // Return the count of remaining comments as a JSON response
-        return response()->json(array('response'=>$commentsCount));
+        return response()->json(array('commentsCount'=>$commentsCount));
     }
-   
+
 }

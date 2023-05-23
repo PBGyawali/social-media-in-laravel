@@ -4,12 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Kirschbaum\PowerJoins\PowerJoins;
+
 
 class Alert extends Model
 {
     use HasFactory;
-    use PowerJoins;
 
     //defining default pagination value when not defined
     protected $perPage = 10;
@@ -55,9 +54,8 @@ class Alert extends Model
         elseif (in_array($type,(array_slice($alerttypes,2,2)))) $iconclass=' text-success ';
         elseif (in_array($type,(array_slice($alerttypes,4,2)))) $iconclass=' text-danger ';
         elseif (in_array($type,(array_slice($alerttypes,6,1)))) $iconclass=' text-secondary ';
-        foreach($alerttypes as $key=> $alerttype)
-            if($type== $alerttype)
-                break;
+
+        $key = array_search($type, $alerttypes);
         return $icontype[$key].$iconclass;
     }
 

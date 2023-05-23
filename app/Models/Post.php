@@ -4,13 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Kirschbaum\PowerJoins\PowerJoins;
+
 use Carbon\Carbon;
+use App\Traits\UserTrait;
 class Post extends Model
 {
     use HasFactory;
 
-    use PowerJoins;
+    
+    use UserTrait;
 
     protected $perPage = 10;
 
@@ -51,22 +53,6 @@ class Post extends Model
         return ucfirst($value);
     }
 
-    public function getFullNameAttribute(){
-       return ucwords($this->first_name) . ' ' . ucwords($this->last_name);
-    }
-
-    public function getUsernameAttribute($value){
-        return ucwords($value);
-    }
-
-    public function getFirstNameAttribute($value){
-        return ucwords($value);
-    }
-
-    public function getLastNameAttribute($value){
-        return ucwords($value);
-    }
-
     public function getNameAttribute()
     {
         $author="Anonymous";
@@ -85,25 +71,14 @@ class Post extends Model
     }
 
     public function getUpdatedAtAttribute($value){
-        if($value=='')
+        if(!$value)
             return $value;
         else
             return date('Y-m-d H:i', strtotime($value));
     }
 
-    public function getProfileImageAttribute($value){
-        //if post creator is marked as anonymous return default profile image
-        if($this->is_anonymous())
-                return config('app.user_images_url').'user_profile.png';
-        if(is_dir(config('app.user_images_path').$value)
-        ||  !file_exists(config('app.user_images_path').$value))
-        //retun the base directory for user images plus image name
-                return config('app.user_images_url').'user_profile.png';
-        else
-                return config('app.user_images_url').$value;
-    }
 
-    public function getImageAttribute($value){
+    public function getPostImageAttribute($value){
         if(is_dir(config('app.post_images_path').$value)
         ||  !file_exists(config('app.post_images_path').$value))
         //retun the base directory for user images plus image name
@@ -141,7 +116,7 @@ class Post extends Model
         return $this->post_status==1 ? true : ($this->post_status=='active'?true:false);
     }
     function is_anonymous(){
-        return $this->anonymous=='yes' ? true : ($this->anonymous=='active'?true:false);
+        return in_array(strtolower($this->anonymous), ['yes','active']);
     }
 
 

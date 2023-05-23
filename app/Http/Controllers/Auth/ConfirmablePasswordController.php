@@ -30,7 +30,7 @@ class ConfirmablePasswordController extends Controller
             $secret_password =WebsiteInfo::first()->secret_password;
             if (!Hash::check($request->secret_password, $secret_password)) {
                 throw ValidationException::withMessages([
-                    'secret_password' => 'Your secret password does not match our records',
+                    'secret_password' =>__('auth.secret_password'),
                 ]);
             }
         }

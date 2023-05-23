@@ -28,32 +28,19 @@ class TicketController extends Controller
                     $status=$data->status;
                     // data to display on modal, tables
                     $prefix="ticket";
+                    $target='#detailModal';
                     // optional button to display
                     $buttons=['update',auth()->user()->is_admin()?'delete':'',];
-                    $actionBtn = view('control-buttons',compact('buttons','id','status','prefix'))->render();
+                    $actionBtn = view('control-buttons',compact('buttons','id','status','prefix','target'))->render();
                      return $actionBtn;
                 })
-             ->editColumn('status', function ($data) {
-               $statustypes=array("open","pending","on-hold","resolved","closed");
-                $icontype=array("envelope","clock","pause-circle","check","times");
-                $class= array('primary ','danger ','warning ','success ','secondary ');
-                foreach($statustypes as $key=> $statustype)
-                    if($data->status== $statustype)
-                            break;
-                $status='<i class="fa-2x fas fa-'.$icontype[$key].' '.$statustype.'
-                text-'.$class[$key].'" title="'.$statustype.'">
-                <span style="display:none;">'.$key.'</span></i>';
-                        return $status;
-                    })
+                ->addColumn('status_icon', function($data){
+                    return $data->status_icon;
+                })
                 ->make(true);
         }
-        $id=auth()->id();
-        $messages=Helper::messages($id);
-        $messagecount=OfflineMessage::user_id($id)->read()->count();
-        $alertcount=Alert::user_id($id)->read()->count();
-       $alerts=Helper::alerts($id);
       $page='tickets';
-      return view ('admin.tickets',compact('page','messages','messagecount','alertcount','alerts'));
+      return view ('admin.tickets',compact('page'));
     }
 
 
@@ -75,28 +62,27 @@ class TicketController extends Controller
                     $TicketComments[] = [
                                         'ticket_id' => $ticket->id,
                                         'msg' => $msg,
+                                        'user_id'=>auth()->id()
                                     ];
                 }
                 // batch insertion into comments table
                 TicketComment::insert($TicketComments);
             }
             DB::commit();
-            return response()->json([
-                'response'=>'<div class="alert alert-success">The ticket was stored!</div>',
-            ]);
+            if ($request->ajax()){
+                return response()->json(['response'=>__('message.create',['name'=>'ticket'])]);
+            }
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'response'=>'<div class="alert alert-danger">An error occurred while storing the data'.
-                    $e->getMessage()
-                .'</div>',
-            ]);
+            if ($request->ajax()){
+                return response()->json(['response'=>__('message.error.delete',['reason'=>$e->getMessage()])]);
+            }
         }
     }
 
      public function edit(Ticket $ticket)
     {
-        $data['detail']=$ticket;
+        
         // Get the comments for the ticket and their related user's profile images and usernames
         $comments = $ticket->comments()->with('user')->get();
         $totalcomments='';
@@ -110,34 +96,31 @@ class TicketController extends Controller
             compact('message','id','created_at','username','profile_image'))->render();
             $totalcomments.= $ticketComment;
         }
-        $data['comments']=$totalcomments;
-        $data['status']=$ticket->status_class;
-        return response()->json($data);
+        $ticket->comments=$totalcomments;
+        return response()->json($ticket);
     }
 
     public function update(Request $request, Ticket $ticket)
     {
         $ticket->update($request->all());
-        return response()->json(array('response'=>'<div class="alert alert-success">The data was updated!</div>'));
+        if ($request->ajax()){
+            return response()->json(['response'=>__('message.update',['name'=>'ticket'])]);
+        }
     }
 
     public function destroy(Ticket $ticket)
     {
         DB::beginTransaction();
         try {
-                $ticket->comments->each->delete();
+                $ticket->comments()->delete();
                 $ticket->delete();
                 DB::commit();
-                return response()->json([
-                    'response'=>'<div class="alert alert-success">The data was deleted!</div>',
-                ]);
+                if (request()->ajax()){
+                    return response()->json(['response'=>__('message.delete',['name'=>'ticket'])]);
+                }               ;
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'response'=>'<div class="alert alert-danger">An error occurred while deleting the data'.
-                    $e->getMessage()
-                .'</div>',
-            ]);
+            return response()->json(['response'=>__('message.error.delete',['reason'=>$e->getMessage()])]);
         }
     }
 }

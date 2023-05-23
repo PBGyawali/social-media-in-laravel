@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Kirschbaum\PowerJoins\PowerJoins;
+
+use App\Traits\UserTrait;
 class TicketComment extends Model
 {
     use HasFactory;
-    use PowerJoins;
+    use UserTrait;
 
     protected $fillable = ['ticket_id','msg'];
 
@@ -28,17 +29,6 @@ class TicketComment extends Model
     {
         $query->leftjoin('users','users.id', 'ticket_comments.user_id')
             ->addSelect('ticket_comments.*','users.username','users.profile_image','users.first_name','users.last_name');
-    }
-
-
-
-     public function getProfileImageAttribute($value){
-        if(is_dir(config('app.user_images_path').$value)
-        ||  !file_exists(config('app.user_images_path').$value))
-        //retun the base directory for user images plus image name
-                return config('app.user_images_url').'user_profile.png';
-        else
-                return config('app.user_images_url').$value;
     }
 
     public function user()

@@ -4,16 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Kirschbaum\PowerJoins\PowerJoins;
+
 use Illuminate\Support\Facades\File;
 use Carbon\Carbon;
+use App\Traits\UserTrait;
+
 class OfflineMessage extends Model
 {
     use HasFactory;
-    use PowerJoins;
+    
+    use UserTrait;
 
 
-    protected $fillable = ['user_id','sender_id','message','read_by_user','notfication'];
+    protected $fillable = ['user_id','sender_id','message','read_by_user','notfication','conversation_id'];
     
     protected $hidden = ['password','remember_token'];
 
@@ -48,30 +51,9 @@ class OfflineMessage extends Model
     {
         return $query->where('read_by_user','no');
     }
-    public function getUsernameAttribute($name){
-        return ucwords($name);
-    }
-    public function getFirstNameAttribute($name){
-        return ucwords($name);
-    }
-    public function getLastNameAttribute($name){
-        return ucwords($name);
-    }
-    public function getFullNameAttribute()
-    {
-       return ucwords($this->first_name) . ' ' . ucwords($this->last_name);
-    }
 
     public function getSentOnAttribute($name)
     {
         return Carbon::parse($name)->diffForHumans();
-       //return Carbon::createFromTimestamp(strtotime($name))->diffForHumans();
-    }
-    public function getProfileImageAttribute($name){
-        if(is_dir(config('app.user_images_path').$name)
-        ||  !File::exists(config('app.user_images_path').$name))
-                return config('app.user_images_url').'user_profile.png';
-        else
-                return config('app.user_images_url').$name;
     }
 }

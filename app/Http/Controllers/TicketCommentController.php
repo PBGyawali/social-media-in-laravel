@@ -23,7 +23,7 @@ class TicketCommentController extends Controller
         $ticketComment=view('ticket_comment',
         compact('message','id','created_at','status','username','profile_image'))
         ->render();
-        return response()->json(['response'=>$ticketComment]);
+        return response()->json(['comments'=>$ticketComment]);
     }
 
     public function edit(TicketComment $ticketComment)
@@ -42,5 +42,6 @@ class TicketCommentController extends Controller
     public function destroy(TicketComment $ticketComment)
     {
         $ticketComment->delete();
+        return response()->json(['delete'=>$ticketComment->getKey()]);
     }
 }

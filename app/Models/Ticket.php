@@ -4,13 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Kirschbaum\PowerJoins\PowerJoins;
+
+use App\Traits\UserTrait;
 class Ticket extends Model
 {
     use HasFactory;
-    use PowerJoins;
+    
+    use UserTrait;
 
     protected $fillable = ['title','email','status','msg'];
+
+
+    //define attribute to be automatically added to newly created model
+    protected $appends = ['status_class'];
 
     public function getCreatedAtAttribute($value){
        return  date('Y-m-d, G:i a', strtotime($value));
@@ -22,22 +28,29 @@ class Ticket extends Model
     }
 
     public function getStatusClassAttribute(){
-        $status_class=array('success','warning','danger','secondary','primary');
-        $status_types=array('resolved','on-hold','pending','closed','open');
-        $status=$this->status;
-        foreach($status_types as $key=> $status_type)
-            if($status_type== $status)
-                break;
-        return 'text-'.$status_class[$key];
+        $status = $this->status;
+        $status_class_map = [
+            "resolved" => "success",
+            "on-hold" => "warning",
+            "pending" => "danger",
+            "closed" => "secondary",
+            "open" => "primary",
+        ];
+        return 'text-' . $status_class_map[$status];
     }
 
-    public function getProfileImageAttribute($value){
-        if(is_dir(config('app.user_images_path').$value)
-        ||  !file_exists(config('app.user_images_path').$value))
-        //retun the base directory for user images plus image name
-                return config('app.user_images_url').'user_profile.png';
-        else
-                return config('app.user_images_url').$value;
+    public function getStatusIconAttribute(){
+        $status_icon_map = [
+            "open" => "envelope",
+            "pending" => "clock",
+            "on-hold" => "pause-circle",
+            "resolved" => "check",
+            "closed" => "times",            
+        ];
+        $status=$this->status;
+        $icon=$status_icon_map[$status];
+        $class=$this->status_class;
+        return view('status_icon',compact('class','status','icon'))->render();
     }
 
 

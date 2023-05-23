@@ -31,7 +31,7 @@ class FollowerController extends Controller
 
     public function show()
     {
-        return response()->json(array('error'=>"Sorry, You cannot follow yourself"));
+        return response()->json(array('error'=>__('auth.follow')));
     }
 
 
@@ -66,7 +66,7 @@ class FollowerController extends Controller
             }
         }
         $this->create($receiver_id,$sender_id,$action);
-        return response()->json(array('response'=>"The user has been ".$action.'ed'));
+        return response()->json(array('response'=>__('message.follow',['action'=>$action.'ed'])));
     }
 
 

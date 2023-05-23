@@ -22,20 +22,19 @@ class TopicController extends Controller
             $data = Topic::all();
             return DataTables::of($data)
                 ->addColumn('action', function($data){
-                $actionBtn='<button type="button"  data-prefix="Topic" title="edit"class="fa fa-edit btn btn-success update"  data-id="'.$data->id .'"> <span class="d-none d-sm-inline-block">EDIT</span> </button>
-                &nbsp;
-                <button type="button" title="delete" class="fa fa-trash btn btn-danger delete" data-id="'.$data->id .'" > <span class="d-none d-sm-inline-block"> DELETE</span></button>';
-                    return $actionBtn;
+                    // primary key of the row
+                    $id=$data->id;
+                    // data to display on modal, tables
+                    $prefix="topic";
+                    // optional button to display
+                    $buttons=['update','delete'];
+                    $actionBtn = view('control-buttons',compact('buttons','id','prefix'))->render();
+                     return $actionBtn;
                 })
                 ->make(true);
         }
       $page='topics';
-      $id=auth()->id();
-        $messages=Helper::messages($id);
-        $messagecount=OfflineMessage::user_id($id)->read()->count();
-        $alertcount=Alert::user_id($id)->read()->count();
-       $alerts=Helper::alerts($id);
-      return view ('admin.topics',compact('page','messages','messagecount','alertcount','alerts'));
+      return view ('admin.topics',compact('page'));
     }
 
 
@@ -46,7 +45,10 @@ class TopicController extends Controller
          ]);
         $this->fields['slug']=Helper::slug($request->name);
         Topic::create(array_merge(array_filter($request->all()), $this->fields));
-        return response()->json(array('response'=>'<div class="alert alert-success">The data was stored!</div>'));
+        if ($request->ajax()){
+            return response()->json(['response'=>__('message.create',['name'=>'topic'])]);
+        }
+
     }
 
 
@@ -68,8 +70,20 @@ class TopicController extends Controller
         $topic_name=$topic->name;
 
         $topics = Topic::all();
-
+        $side='user.';
+        $username='username';
         $messages=$messagecount=$alertcount=$alerts='';
+                $check=auth()->user()??'';
+                $username=$check->username??'newuser';
+                $profileimage=$check->profile_image??'no_image';
+                $side='user.';
+                if(!session()->has('website_name')||session()->missing('website_name')||!session()->has('website_logo')||session()->missing('website_logo')){
+                    session(['website_name'=>$info->website_name]);
+                    session(['website_logo'=>$info->website_logo]);
+                    session(['website_icon'=>$info->website_logo]);
+                }
+                $website_name=session()->has('website_name')?session('website_name'):'';
+                $website_logo=session()->has('website_logo')?session('website_logo'):'';
 
         if(auth()->user()){
 
@@ -83,11 +97,10 @@ class TopicController extends Controller
 
            $alerts=Helper::alerts($id);
         }
-
         return view('filtered_posts',
                                 compact(
-                                    'page','topic_name','posts','pasts','info','topics','messages',
-                                    'messagecount','alertcount','alerts'
+                                    'page','topic_name','posts','pasts','info','topics','website_name','website_logo','alertcount','alerts','side',
+                                    'messagecount','messages','username','profileimage'
                                     )
                                 );
     }
@@ -107,16 +120,19 @@ class TopicController extends Controller
          $this->fields['slug']=Helper::slug($request->name);
 
         $topic->update(array_merge(array_filter($request->all()), $this->fields));
+        if ($request->ajax()){
+            return response()->json(['response'=>__('message.update',['name'=>'topic'])]);
+        }
 
-        return response()->json(array('response'=>'<div class="alert alert-success">The data was updated!</div>'));
 
     }
 
     public function destroy(Topic $topic)
     {
         $topic->delete();
-
-        return response()->json(array('response'=>'<div class="alert alert-success">The data was deleted!</div>'));
+        if ($request->ajax()){
+            return response()->json(['response'=>__('message.delete',['name'=>'topic'])]);
+        }
 
     }
 }

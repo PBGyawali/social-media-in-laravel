@@ -4,17 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Kirschbaum\PowerJoins\PowerJoins;
+
 class RatingInfo extends Model
 {
     use HasFactory;
-    use PowerJoins;
+    
 
     public $timestamps = false;
 
-    public $incrementing = false;
-
-    protected $primaryKey = null;
+    protected $primaryKey = 'rating_id';
 
     protected $fillable = ['user_id','post_id','rating_action'];
 

@@ -25,7 +25,7 @@ class ReplyController extends Controller
             Helper::activitylog($user_id,'reply','comment',$comment_id,$comments,$reply->body);
             if(!$check->is_same_user($receiver_id))
                 Alert::create(array_combine(array('user_id','alert','type'),array($receiver_id,$reply->username.' replied on your comment '.$comments,'reply')));
-            return response()->json(array('response'=>$html));
+            return response()->json(array('comments'=>$html));
 }
 
     public function update(Request $request)
@@ -35,7 +35,7 @@ class ReplyController extends Controller
        $reply=Reply::withuserdata()->find($request->id);
        $reply->update($request->only('body'));
        $html=view('reply_info',compact('reply','check'))->render();
-       return response()->json(array('response'=>$html));
+       return response()->json(array('comments'=>$html));
     }
 
     public function destroy(Request $request,Reply $reply)

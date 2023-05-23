@@ -4,26 +4,26 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Kirschbaum\PowerJoins\PowerJoins;
+
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 
 class Topic extends Model
 {
     use HasFactory;
-    use PowerJoins;
+    
 
     public $timestamps = false;
 
     protected $fillable = ['name','slug'];
 
-    public function setNameAttribute($name){
-        $this->attributes['name'] = ucwords($name);
+    public function name(): Attribute
+    {
+        return new Attribute(
+            get: fn ($value) => ucwords($value),
+            set: fn ($value) => ucwords($value),
+        );
     }
-    public function getNameAttribute($name){
-        return ucwords($name);
-    }
-
     public function scopeWithUserData($query)
     {
         $query->leftjoin('users','users.id','posts.user_id')

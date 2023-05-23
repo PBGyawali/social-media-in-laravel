@@ -46,7 +46,7 @@ class RatingInfoController extends Controller
     {
         Helper::activitylog($sender_id,$action,'post',$post_id,$title);
 
-        if(!in_array($action,array('unlike','undislike')))
+        if(!in_array($action,array('unlike','undislike')) && $sender_id!=$receiver_id)
             // Use model mass assignment to create a new alert
             Alert::create([
                 'user_id' => (int) $receiver_id,
@@ -74,7 +74,7 @@ class RatingInfoController extends Controller
                 $request->only('rating_action')
             );
                break;
-            case 'unlike':
+          case 'unlike':
           case 'undislike':
                 $this->destroy($post_id,$sender_id);
             break;

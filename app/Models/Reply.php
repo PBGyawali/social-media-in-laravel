@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Kirschbaum\PowerJoins\PowerJoins;
+
 use Illuminate\Support\Facades\File;
+use App\Traits\UserTrait;
 class Reply extends Model
 {
     use HasFactory;
-    use PowerJoins;
+    
+    use UserTrait;
 
     protected $fillable = ['user_id','comment_id','body','status'];
 
@@ -42,26 +44,7 @@ class Reply extends Model
         return date("F j, Y ", strtotime($value));
     }
 
-    public function getUsernameAttribute($value){
-        return ucwords($value);
-    }
-    public function getFirstNameAttribute($value){
-        return ucwords($value);
-    }
-    public function getLastNameAttribute($value){
-        return ucwords($value);
-    }
-    public function getFullNameAttribute()
-    {
-       return ucwords($this->first_name) . ' ' . ucwords($this->last_name);
-    }
-    public function getProfileImageAttribute($value){
-        if(is_dir(config('app.user_images_path').$value)
-        ||  !File::exists(config('app.user_images_path').$value))
-                return config('app.user_images_url').'user_profile.png';
-        else
-                return config('app.user_images_url').$value;
-    }
+    
 
     public function getBodyAttribute($value){
         return htmlspecialchars($value);

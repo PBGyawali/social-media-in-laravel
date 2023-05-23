@@ -8,9 +8,10 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Helper\Helper;
-
 use App\Models\ActivityLog;
 use App\Models\UserLog;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -57,29 +58,15 @@ class AuthenticatedSessionController extends Controller
               $redirect=RouteServiceProvider::WELCOME;
               break;
         }
-        if(auth()->user()){
-            $id=auth()->id();
-            $userlog=UserLog::find($id);
-            if(!empty($userlog->user_id))
-            $userlog->update(['last_login_attempt'=>Helper::get_datetime()]);
-            Helper:: activitylogs($id,'You logged into your','login','profile');
+      if ($request->ajax()) {
+            return response()->json(array('redirect'=>$redirect));
         }
-        if ($request->ajax()) {
-            return response()->json(array('response'=>$redirect));
-        }
-        return redirect()->intended($redirect);
+        return redirect($redirect);
     }
 
     public function destroy(Request $request)
     {
-        if (auth()->user()){
-            $id=auth()->id();
-            $userlog=UserLog::find($id);
-            if(!empty($userlog))
-            $userlog->update(['last_logout'=>Helper::get_datetime()]);
-            Helper:: activitylogs($id,'You logged out from your','logout','profile');
-           ActivityLog::user_id($id)->old()->delete();
-        }
+        
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

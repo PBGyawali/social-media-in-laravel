@@ -19,32 +19,25 @@ class AlertController extends Controller
 
         $id=auth()->id();
         //if request is sending id then use it otherwise use the default authenticated user id
-        $alertid=$request->id?$request->id:auth()->id();
-        $info=$page='alerts';
+        $alertid=$request->id??$id;
+        $page='alerts';
         $view='admin.alerts';
 
         //if request url is user.alerts it is coming from the users section
         if($request->route()->named('user.alerts')){
             $view=$page;
-            $info=WebsiteInfo::first();
             $alertid=$id;
         }
-        $logged_alerts=$log_username='';
-        //if request is sending id then use it otherwise use the default authenticated user id
-        $alertid=$request->id?$request->id:auth()->id();
-        $messages=Helper::messages($id);
-        $messagecount=OfflineMessage::user_id($id)->read()->count();
-        $alertcount=$this->show();
-        $logged_alerts=$alerts=Helper::alerts($id);
+        $logged_alerts=$logged_username='';
         if($alertid!=$id){
             $logged_user=User::find($alertid);
             if($logged_user){
-                $log_username= $logged_user->username;
-                $logged_alerts=Helper::alerts($alertid);
+                $logged_username='for '. $logged_user->username;
             }
         }
-        return view($view,compact('alerts','page','messages','messagecount',
-        'alertcount','alerts','info','log_username','logged_alerts'));
+        $logged_alerts=Helper::alerts($alertid);
+        return view($view,compact('page',
+        'logged_username','logged_alerts'));
     }
 
 
@@ -69,10 +62,10 @@ class AlertController extends Controller
     {
         Alert::find($request->id)->update(['read_by_user'=>'yes']);
         $count=$this->show();
-        return response()->json(array('response'=>$count));
+        return response()->json(array('response'=>$count,'alertcount'=>$count));
     }
 
-    
+
 
     /**
      * Deletes an alert object from the database based on the given request parameters.
@@ -98,7 +91,7 @@ class AlertController extends Controller
         $count = $this->show();
 
         // Return the count as a JSON response
-        return response()->json(array('response'=>$count));
+        return response()->json(array('response'=>$count,'alertcount'=>$count));
     }
 
 
