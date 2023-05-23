@@ -43,7 +43,12 @@
 									<?php endif ?>
 									<!-- Display total number of comments on this post  -->
 
-									<h3 ><span class="comments_count" id="comments_count_<?= $post->id ?>"><?= ($commentscount[$key]>0?'Show '.$commentscount[$key]:$commentscount[$key]); ?> Comment<?= ($commentscount[$key]>1?'s':''); ?></span></h3>
+									<h3 >
+										<span class="comments_count" id="comments_count_<?= $post->id ?>">
+											{{$commentscount[$key]>0?'Show':''}} {{$commentscount[$key]}} 
+											{{Str::plural('Comment',$commentscount[$key])}}
+										</span>
+									</h3>
 										<!-- comments wrapper -->
 									<div id="comments-wrapper_<?= $post->id ?>" class="comments-wrapper">
 										<?php if (isset($comments) && $commentscount[$key]>0): ?>

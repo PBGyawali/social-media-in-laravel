@@ -15,3 +15,4 @@ $website_logo=$info->website_logo;
 @include('reset_container')
 @include('conditions_container')
 @include('login_footer')
+@include('footer_script')

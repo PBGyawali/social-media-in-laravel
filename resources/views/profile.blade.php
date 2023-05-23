@@ -39,7 +39,7 @@ $email=$check->email;
 
 
 @include('minimal_footer')
-	<?php include_once(INCLUDES. 'footer.php') ?>
+@include('footer')
 	<script src="<?= JS_URL?>jquery.fancybox.min.js"></script>
 	<link rel="stylesheet" href="<?= CSS_URL?>jquery.fancybox.min.css" />
 	<script src="<?= JS_URL.'confirm_button.js'?>"></script>
@@ -47,6 +47,3 @@ $email=$check->email;
 </body>
 </html>
 @include('footer_script')
-<script>
-    method_type='/'+$('#user_id').val()+'/update'
-</script>

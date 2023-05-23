@@ -83,10 +83,6 @@
 		          	</div>
         		<div class="footer text-right">
                 <?= csrf_field(); ?>
-				<?php if (isset($post)): ?>
-					<input type="hidden" name="old_image" value="<?= $post->image; ?>">
-					<input type="hidden" name="id" value="<?= $post->id; ?>">
-                <?php endif ?>
                 <input type="hidden" name="user_id"  value="<?= auth()->id(); ?>" >
                 <button type="submit"  class="btn btn-<?=(isset($post) ) ? 'primary' : 'success ' ?>" ><?=(isset($post) ) ? 'Edit ' : 'Add ' ?> Post</button>
 
@@ -101,12 +97,10 @@
 </body>
 </html>
 @include('minimal_footer')
-@include('footer_script')
-
 <script type="text/javascript" src="<?= JS_URL.'parsley.min.js'?>"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.8.0/ckeditor.js"></script>
 <link rel="stylesheet" href="<?= CSS_URL.'parsley.css'?>" >
+@include('footer_script')
 <script>
 	$('#post_form').parsley();
-
 </script>

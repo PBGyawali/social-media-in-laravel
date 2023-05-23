@@ -1,10 +1,6 @@
-<?php
-echo $__env->make('config', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render();
-
-include_once(ADMIN_INCLUDES.'admin_header.php');
-include_once(ADMIN_INCLUDES.'admin_sidebar.php');
-$logged_username=(isset($log_username)&&!empty($log_username))?'for '. $log_username:'';
-?>
+@include('config')
+@include('admin_header')
+@include('admin_sidebar')
 <input type="hidden" name="" id="ajaxurl" class="alerts" value="<?= route('alerts')?>">
 <div class="d-flex flex-column " id="content-wrapper">
     <div id="content">

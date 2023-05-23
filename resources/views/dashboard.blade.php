@@ -1,14 +1,13 @@
-<?php
-echo $__env->make('config', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render();
-include_once(INCLUDES.'minimal_header.php');
-include_once(INCLUDES.'sidebar.php');
-?>
+@include('config')
+@include('minimal_header')
+@include('sidebar');
+
 	<body id="page-top">
 	        <div class="col-sm-12 col-md-12 col-xl-12 py-4 ">
 			<div class="container container-fluid dashboard ">
 	            <div class="row ">
                 <div class="col-md-12">
-                <a href="<?= route('user.profile')?>"><h1 >Welcome 	<strong style="color: green";><?=$username ?></strong>	    </h1></a>
+                <a href="<?= route('user.profile')?>"><h1 >Welcome 	<strong style="color: green";><?=$username??auth()->user()->username ?></strong>	    </h1></a>
                 </div >
                 </div>
                 <h3 >Here are some stats for your profile:</h3><br>
@@ -69,4 +68,4 @@ include_once(INCLUDES.'sidebar.php');
 <script type="text/javascript" src= "<?= JS_URL.'progressbar_bootstrap.js'?>"></script>
 <script type="text/javascript" src="<?= JS_URL?>chart.min.js"></script>
 <script type="text/javascript" src="<?= JS_URL?>graph.js"></script>
-<?php include_once(INCLUDES. 'footer.php') ?>
+@include('footer')

@@ -1,7 +1,6 @@
-<?= $__env->make('config', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render();
- include_once(ADMIN_INCLUDES.'admin_header.php');
-include_once(ADMIN_INCLUDES.'admin_sidebar.php');
-?>
+@include('config')
+@include('admin_header')
+@include('admin_sidebar')
 			<span class="text-center position-absolute w-100 message"id="message" style="z-index:978"></span>
 	            <div class="card">
 	            	<div class="card-header">
@@ -18,7 +17,7 @@ include_once(ADMIN_INCLUDES.'admin_sidebar.php');
 	            		</div>
 	            	</div>
 	            	<div class="card-body">
-						@include('table',['headers'=>['status','title','email','created_at'=>'date created']])
+						@include('table',['headers'=>['status_icon'=>'status','title','email','created_at'=>'date created']])
 	            	</div>
 	            </div>
 	        </div>
@@ -60,15 +59,11 @@ include_once(ADMIN_INCLUDES.'admin_sidebar.php');
 			            	<div class="col-md-6">
 							<textarea name="msg" placeholder="Enter your message here..." id="msg" class="form-control"  required  data-parsley-trigger="on change"></textarea>
 			            	</div>
-			            	<div class="col-md-2">
-			            		<button type="button" id="add_more" class="btn btn-success btn-sm">+</button>
-			            	</div>
 			            </div>
-		            	<div id="append_comment"></div>
 		          	</div>
         		</div>
         		<div class="modal-footer">
-          			<input type="submit"  id="submit_button" class="btn btn-success" value="Add" />
+          			<button type="submit" class="btn btn-success" value="Approve" >Add</button>
           			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         		</div>
       		</div>
@@ -81,7 +76,10 @@ include_once(ADMIN_INCLUDES.'admin_sidebar.php');
 	  <form method="post" action="<?=route('ticket.comments.create')?>"id="comment_form" >
       		<div class="modal-content">
         		<div class="modal-header ">
-					  <h4 class="modal-title text-center " id="viewmodal_title"><span id="titleview"></span> <span id="statusview"class=" text-danger ">()</span></h4>
+					  <h4 class="modal-title text-center " id="viewmodal_title">
+						<span id="titleview"></span> 
+						<span id="statusview"class=" text-danger ">()</span>
+					 </h4>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
         		</div>
         		<div class="modal-body">

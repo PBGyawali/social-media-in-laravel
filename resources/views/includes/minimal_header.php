@@ -14,7 +14,6 @@
 		<link rel="stylesheet" href="<?= CSS_URL.'bootstrap_style.css'?>" >
 		<link rel="stylesheet" href="<?= CSS_URL?>jquery-confirm.min.css">
         <title><?=isset($page)?ucwords($page):''?></title>
-        <script type="text/javascript" src="<?= JS_URL?>history.js"></script>
 
 
 

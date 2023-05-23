@@ -1,6 +1,6 @@
 @include('config')
 @include('minimal_header')
-<?php  include(INCLUDES.'sidebar.php'); ?>
+@include('sidebar');
   <link rel="stylesheet" type="text/css" href="<?php  echo CSS_URL?>post.css">
 </head>
 <body>
@@ -114,7 +114,7 @@
 </body>
 </html>
 
-<?php include_once(INCLUDES . 'footer.php') ?>
+@include('footer')
 <script type="text/javascript" src="<?= JS_URL?>comment_system.js" ></script>
 <script type="text/javascript" src="<?= JS_URL?>user_action.js" ></script>
 <script type="text/javascript" src="<?= JS_URL?>visitor_detail.js"></script>

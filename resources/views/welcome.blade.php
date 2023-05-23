@@ -1,6 +1,6 @@
 @include('config')
-    @include('minimal_header')
-	<?php include(INCLUDES.'sidebar.php')?>
+@include('minimal_header')
+@include('sidebar');
 <link rel="stylesheet" href="<?= CSS_URL?>userhome.css">
 </head>
 <html>
@@ -9,10 +9,10 @@
 		<div class="row">
 			<div class="col-md-12 pl-0">
 				<div class=user_info>
-					<h2><b>Hi </b><strong style="color: green";><?= $username; ?></strong>,
+					<h2><b>Hi </b><strong style="color: green";><?= $username??''; ?></strong>,
 				</div>
 				<div class="welcome">
-				<h2>Welcome to <?= $website_name; ?></b></h2>
+				<h2>Welcome to <?= $website_name??'our website'; ?></b></h2>
 				</div>
 				<div class="info">
 					<Section>

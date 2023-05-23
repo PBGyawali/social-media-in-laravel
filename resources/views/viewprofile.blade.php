@@ -1,9 +1,9 @@
 @include('config')
     @include('minimal_header')
 <?php
-$row=$users??$user;
-$user_id=$user->id;
-$id=$row->id;
+$row=$users??$user??[];
+$user_id=$user->id??'';
+$id=$row->id??0;
  ?>
         @include('sidebar')
             @include('chatbox')
@@ -20,17 +20,34 @@ $id=$row->id;
               <div class="card">
                 <div class="card-body">
                   <div class="d-flex flex-column align-items-center text-center">
-                    <img src=" <?=  $row->profile_image?> " alt="Admin" class="rounded-circle" width="150">
+                    <img src="<?=$row->profile_image?>" alt="Admin" class="rounded-circle profile-user-image" width="150">
                     <div class="mt-3">
-                      <h4><?= $row->username?>  </h4>
-                      <p class="text-secondary mb-0"><?php if (($row->is_verified())){echo'  <i class="fa btn btn-sm btn-success fa-check-circle"> Verified Profile';} ?></i></p>
+                      <h4 class="profile-username"><?= $row->username?>  </h4>
+                      <p class="text-secondary mb-0">
+                        @if($row->is_verified())
+                         <i class="fa btn btn-sm btn-success fa-check-circle"> 
+                          Verified Profile
+                          </i>
+                        @endif
+                      </p>
+                      @if($id!=$user_id)
                       <p class="text-muted font-size-sm"></p>
-                      <?php if ($userfollowed)
-                        echo '<button type="button" class="btn-sm btn-success action_button" data-url="'.route('followers').'" data-user_id="'.$user_id.'"'.' data-action="follow" data-receiver_id="'.$id.'">UnFollow</button>';
-                        else
-                        echo '<button type="button" class="btn-sm btn-primary action_button" data-url="'.route('followers').'"data-user_id="'.$user_id.'"'.' data-action="unfollow" data-receiver_id="'.$id.'"><i class="glyphicon glyphicon-plus text-white" style="color:white"></i>Follow</button>';
-                      ?>
-                      <button class="btn-sm btn-outline-primary btn-info text-white send_message_button" data-receiver_type="user" data-receiver_id="<?= $id?>" data-sender_id="<?=  $user_id?>" >Message</button>
+                      @empty($userfollowed)
+                      <button type="button" class="btn-sm btn-primary action_button" data-url="{{route('followers')}}"data-user_id="{{$user_id}}" data-action="unfollow" data-receiver_id="{{$id}}">
+                        <i class="glyphicon glyphicon-plus text-white" style="color:white"></i>Follow
+                      </button>
+                      @else
+                      <button type="button" class="btn-sm btn-success action_button" data-url="{{route('followers')}}" data-user_id="{{$user_id}}" data-action="follow" data-receiver_id="{{$id}}">
+                        UnFollow
+                      </button>
+                      @endempty  
+                                          
+                      <button class="btn-sm btn-outline-primary btn-info text-white send_message_button"
+                        data-id="<?=$id?>" 
+                        data-sender_id="<?=$user_id?>">
+                        Message
+                      </button>
+                      @endif
 
                     </div>
                   </div>
@@ -78,7 +95,7 @@ $id=$row->id;
                       <h6 class="mb-0">Email</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                    <?=  $row->email?$row->email:'No email found'?>
+                    <?=  $row->email??'No email found'?>
                     </div>
                   </div>
                   <hr>
@@ -170,8 +187,18 @@ $id=$row->id;
           </div>
         </div>
     </div>
-    <?php include_once(INCLUDES.'minimal_footer.php');?>
-    <script src="<?= JS_URL.'confirmdefaults.js'?>"></script>
-    <script src="<?= JS_URL.'confirm.js'?>"></script>
+
+    <div class="container-fluid mb-0 d-none d-md-block position-fixed bottom-0" style="z-index:10;">
+      <div class="row py-0 px-1">
+        <div class="col-10 pl-0 pr-0">
+          <div class="d-flex flex-column" >
+                    <nav class="navbar navbar-expand-sm navbar-light bg-transparent chatbox-content">                         
+                        
+                    </nav>                      
+              </div>
+          </div>
+      </div>
+    </div>
+    @include('minimal_footer')
 <script type="text/javascript" src="<?= JS_URL?>user_action.js" ></script>
 @include('footer_script')

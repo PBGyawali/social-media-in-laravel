@@ -2,7 +2,7 @@
     <div class="header">
       <h2>LOGIN</h2>
   </div>
-  <span class="position-absolute text-center w-100"id="message" style="z-index:10;"><?php ///repeatmessage();?></span>
+  <span class="position-absolute text-center w-100"id="message" style="z-index:10;"></span>
   <form method="post" class="user_form" action="<?= route('userlogin');?>#login" autocomplete="on">
   <div class="social">
         <h4>Connect with</h4>
@@ -40,7 +40,7 @@
 
   	<div class="form-input-group">
           <input type="hidden" name="website_name" value="<?= $info->website_name; ?>" >
-          <input type="hidden" name="website_logo" value="<?= $website_logo; ?>" >
+          <input type="hidden" name="website_logo" value="<?= $website_logo??$info->website_logo; ?>" >
           <?= csrf_field(); ?>
           <button type="submit" name="submit"class="btn btn-primary">Login</button>
           <button type="submit" class="btn btn-secondary" name="login_guest" value="login_guest"id="login_guest">Login as a guest</button>

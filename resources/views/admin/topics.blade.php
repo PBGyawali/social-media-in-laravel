@@ -1,14 +1,15 @@
-<?php  echo $__env->make('config', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render();
-include_once(ADMIN_INCLUDES.'admin_header.php');
-include_once(ADMIN_INCLUDES.'admin_sidebar.php');
-?>
-			<span class="text-center position-absolute w-100"id="message" style="z-index:50"></span>
+@include('config')
+@include('admin_header')
+@include('admin_sidebar')
 	            <div class="card">
 	            	<div class="card-header">
 						@include('header_card',['element'=>'topic','name'=>'management','noreport'=>true])
 					</div>
 	            	<div class="card-body" id="topic-list-box">
-						@include('table',['headers'=>['id','name'=>'Topic name']])
+						<div class="table-responsive">
+							@include('table',['headers'=>['id','name'=>'Topic name']])
+						</div>
+						
 					</div>
 	            </div>
 	        </div>
@@ -37,7 +38,7 @@ include_once(ADMIN_INCLUDES.'admin_sidebar.php');
 		          	</div>
 
         		<div class="modal-footer">
-          			<input type="submit" id="submit_button" class="btn btn-success" value="Add" />
+                    <button type="submit" class="btn btn-success" value="Approve" >Disable</button>
           			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         		</div>
       		</div>

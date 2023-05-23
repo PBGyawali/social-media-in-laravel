@@ -1,11 +1,10 @@
 @include('config')
+@include('admin_header')
+@include('admin_sidebar')
 <?php
-$email=session()->has('email')?session('email'):'';
 $sex=$user->sex;$facebook= $user->facebook;$twitter=$user->twitter;
-    $googleplus=$user->googleplus;$firstname=$user->first_name;$lastname= $user->last_name;
-    $email=$user->email;
-include_once(ADMIN_INCLUDES.'admin_header.php');
-include_once(ADMIN_INCLUDES.'admin_sidebar.php');
+$googleplus=$user->googleplus;$firstname=$user->first_name;$lastname= $user->last_name;
+$email=$user->email;
 ?>
 	    <span class="text-center position-absolute w-100 message"id="message" style="z-index:978"></span>
 	            <div class="card">
@@ -30,13 +29,10 @@ include_once(ADMIN_INCLUDES.'admin_sidebar.php');
 	            </div>
 
 	<script src="<?= JS_URL?>jquery.fancybox.min.js"></script>
+	<script src="<?= JS_URL?>confirm_button.js"></script>
 	<link rel="stylesheet" href="<?= CSS_URL?>jquery.fancybox.min.css" />
-    <script src="<?= JS_URL.'confirm_button.js'?>"></script>
 </body>
 </html>
 @include('footer_script')
-<script>
-    method_type='/'+$('#user_id').val()+'/update'
-</script>
 
 

@@ -1,19 +1,18 @@
 @include('config')
-<?php
-    $check=auth()->user()??'';
-?>
 @include('minimal_header')
 <link rel="stylesheet" type="text/css" href="<?= CSS_URL?>post.css">
 <style type="text/css">
 body {
     font-family: Arial;
 }
+ 
 </style>
 </head>
 <body class="pt-0 bg-gray-200 ">
-<?php include_once(INCLUDES.'sidebar.php');?>
+    @include('sidebar')
+@include('message')
     <div class="post-wall ">
-	<input type="hidden"  id="total_count" value="<?= $count; ?>" />
+	<input type="hidden"  id="total_count" value="<?= $count??0; ?>" />
     <input type="hidden"  id="action_server" value="<?= route('article'); ?>" />
     <input type="hidden"  id="scroll_server" value="<?= route('home'); ?>" />
     <input type="hidden" id="rating_server" value="<?= route('ratings')?>" />
@@ -46,8 +45,29 @@ body {
         </div>
     </div>
 </div><!-- container div end -->
-<?php include_once (INCLUDES.'footer.php') ?>
+
+<div class="container-fluid mb-0 d-none d-md-block position-fixed bottom-0" style="z-index:10;">
+	<div class="row py-0 px-1">
+		<div class="col-10 pl-0 pr-0">
+			<div class="d-flex flex-column" >
+                <nav class="navbar navbar-expand-sm navbar-light bg-transparent chatbox-content">                         
+                    
+                </nav>                      
+	        </div>
+	    </div>
+	</div>
+</div>
+@include('footer')
 <script type="text/javascript" src="<?= JS_URL?>scroll.js" ></script>
 <script type="text/javascript" src="<?= JS_URL?>comment_system.js" ></script>
 <script type="text/javascript" src="<?= JS_URL?>user_action.js" ></script>
 @include('footer_script')
+
+<script>  
+    function update(data,response){
+        $(`#user-chat-content${response.id}`).append(response.update)
+        if ("conversation_id" in response && response.conversation_id){
+            $(`#conversation_id${response.id}`).val(response.conversation_id);
+        }
+    }
+    </script>

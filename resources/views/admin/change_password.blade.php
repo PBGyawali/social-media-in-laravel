@@ -1,8 +1,7 @@
 @include('config')
-<?php  
-include_once(ADMIN_INCLUDES.'admin_header.php');
-include_once(ADMIN_INCLUDES.'admin_sidebar.php');
-?>
+@include('admin_header')
+@include('admin_sidebar')
+
 	<span class="text-center position-absolute w-100 message"id="message" style="z-index:978"></span>
 	            <div class="card">
 	            	<div class="card-header">
