@@ -1,9 +1,8 @@
-+
-(function($) {
+$(document).ready(function(){
   "use strict"; // Start of use strict
 
   // Toggle the side navigation
-  $("#sidebarToggle, #sidebarToggleTop").on('click', function(e) {
+  $(document).on('click', '#sidebarToggle, #sidebarToggleTop', function(e) {
     $("body").toggleClass("sidebar-toggled");
     $(".sidebar").toggleClass("toggled");
     if ($(".sidebar").hasClass("toggled")) {
@@ -18,8 +17,10 @@
     };
   });
 
+
+
   // Prevent the content wrapper from scrolling when the fixed side navigation hovered over
-  $('body.fixed-nav .sidebar').on('mousewheel DOMMouseScroll wheel', function(e) {
+  $(document).on('mousewheel DOMMouseScroll wheel', '.sidebar', function(e) {
     if ($(window).width() > 768) {
       var e0 = e.originalEvent,
         delta = e0.wheelDelta || -e0.detail;
@@ -40,11 +41,24 @@
 
   // Smooth scrolling using jQuery easing
   $(document).on('click', 'a.scroll-to-top', function(e) {
-    var $anchor = $(this);
+    var $anchor = $(this).attr('href');
     $('html, body').stop().animate({
-      scrollTop: ($($anchor.attr('href')).offset().top)
+      scrollTop: ($($anchor).offset().top)
     }, 1000, 'easeInOutExpo');
     e.preventDefault();
   });
 
-})(jQuery); // End of use strict
+  $(document).on("click",'.dropdown-btn', function()  {
+   // $(this).toggleClass("active_class").siblings().toggle();
+   // return;
+      $(this).toggleClass("active_class");
+      var dropdownContent = $(this).siblings();
+      $(dropdownContent).toggle();
+  });
+
+
+
+}); // End of use strict
+
+
+

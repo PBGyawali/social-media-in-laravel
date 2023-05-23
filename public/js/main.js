@@ -1,19 +1,23 @@
-$(document).ready(function() {
+
     emailcondition=usernamecondition=true
-    $('.user_form').parsley();
-    $.ajaxSetup({
-      headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-      }
-  });
+    if($('.user_form').length){
+        $('.user_form').parsley();
+    }
 
   store();
+  $('.user_form').on("submit",function(){
+    if($(this).parsley().isValid())
+    {
+        $button=$(this).find("button") ;
+        disableButton($button)
+    }
+});
 
-  // determmine contaier to show from hash
+// determmine contaier to show from hash
   function store(){
     var hash = window.location.hash;
 		check(hash);
-    }
+  }
 
 	window.onhashchange = function() {
 		store();
@@ -64,14 +68,7 @@ $('.login_link').on('click', function(event){
             show(link);
     });
 
-    $('.user_form').on("submit",function(){
-        if($(this).parsley().isValid())
-        {
-            $button=$(this).find("button") ;
-            $button.text('Please Wait');
-            $button.css({"filter": "grayscale(100%)","-webkit-filter":"grayscale(100%)"});
-        }
-        });
+    
 
         // show hide password text when clicked on toggle
         $(".toggle-password").click(function() {
@@ -154,7 +151,7 @@ $('.login_link').on('click', function(event){
            var value=formcheck($input,send);
           //  check with database only when minimum input requirements are fulfilled
           if($input.parsley().isValid()) {
-            ajaxcall(value,send,$input,object)
+            ajaxCheck(value,send,$input,object)
           }
         });
 
@@ -190,42 +187,59 @@ $('.login_link').on('click', function(event){
             thisObj.parent().addClass(css);
         }
 
-        function ajaxcall(value,send,$input,object){
+        function ajaxCheck(value,send,$input,object){
             url=$('#register_form').data('url')+'/check';
-          $.ajax({
-             url:url,
-             method: 'POST',
-             dataType:"JSON",
-             data: {'check' : 1,'data' : value, 'column':send},
-             success: function(response){
-               if (response == 'exists' ) {
-                clear($input,'form_error', object+" "+response+" "+ "<i class='fas fa-times checkdata'></i>");
-                window[send+'condition'] = false;
-               }
-               else if (response == 'available') {
-                clear($input,'form_success',object+" "+response+" "+ "<i class='fas fa-check-circle checkdata'></i>");
-                window[send+'condition'] = true;
+            let sendData={'check' : 1,'data' : value, 'column':send};
+            ajaxCall(url,sendData).then(function(response){
+              if (response == 'exists' ) {
+               clear($input,'form_error', object+" "+response+" "+ "<i class='fas fa-times checkdata'></i>");
+               window[send+'condition'] = false;
+              }
+              else if (response == 'available') {
+               clear($input,'form_success',object+" "+response+" "+ "<i class='fas fa-check-circle checkdata'></i>");
+               window[send+'condition'] = true;
 
-               }
-             }
-          });
+              }
+            });         
         }
 
         $('#reg_btn').on('click', function(event){
+            let form=$(this).closest("form");
           if ( !emailcondition || !usernamecondition) {
             let message='We cannot move forward until ';
                   if (!emailcondition && !usernamecondition)
                   message+='email and username errors are resolved'
-                  else if (!emailcondition)
-                  message+='email error is resolved'
-                  else
-                  message+='username error is resolved'
+                  else {
+                    if (!emailcondition)
+                    message+='email error is resolved'
+                    else
+                    message+='username error is resolved'
+                  }
             $('#error_msg').html('<div class="bg-danger alert text-white">'+message+'</div>')
            $('#error_msg').fadeTo(3500, 800).slideUp(800);
            event.preventDefault();
          }else{
-             // proceed with form submission
-             $('#register_form').submit();
+             form.submit();
           }
         })
-});
+
+        $('#reg_bt').on('click',function(event){
+            event.preventDefault();
+            let form=$(this).closest("form");
+            let inputs=form.find("input:not(':hidden'),select:not([hidden])");
+            $('.errormessage').text('');
+            $.each(inputs,function(key,input){
+                var name=$(input).attr('name')
+                let displayName=createDisplayName(name);
+                var value=$(input).val();
+                if(!value ){
+                    $(input).after($(`<span class="text-danger errormessage"
+                            id="errormessage_${key}" >${displayName} cannot be empty</span>`));
+                }
+                else
+                $('#errormessage_'+key).text('');
+            });
+            if($('.errormessage').length)
+                return
+            form.submit();
+      });

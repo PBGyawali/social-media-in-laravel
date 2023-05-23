@@ -1,10 +1,10 @@
 
-  var msg = $('#sender_msg');
+  var messageBox = $('#sender_msg,#chat_message');
   var username = $("#chat_username").val();
   var src=$("#imagesource").val();
   var typingStatus = $('#typing_on');
-  var lastTypedTime = new Date(0);
-  var time=getDate();
+  var lastTypedTime = new Date(0).getTime();
+  var time=getDate(true);
   var delay = 8000; //typing delay time in milliseconds
 
 
@@ -15,28 +15,43 @@ $('.tabbutton').on('click', function(event){
     $(this).toggleClass('active');
     $('.tab-pane').hide();
     $('#'+tabpane).show();
+    $('.minimize').html('^');
     $("#usermessagedate").text(getDate(true));
 });
 
 $('.open-button').on('click', function(event){
   $('#chatbox').toggleClass('d-none');
-    var sender_id=$(this).data('sender_id');
-    var receiver_id= $(this).data('id');
-    var receiver_type=$('#receiver_type').val();
 });
 function refreshTypingStatus(){
-  if (!msg.is(':focus') || msg.val() == '' || new Date().getTime() - lastTypedTime.getTime() > delay)
-      typingStatus.html('');
-    else
-      typingStatus.html(username+' is typing...');
+  return
+  if (!messageBox.is(':focus') || currentTime() - lastTypedTime > delay){
+    typingInfo='Last online '+lastTypedTime;
+  }
+  if ( !messageBox.val() ){
+    typingInfo=' ';
+  }
+    else{
+      typingInfo=username+' is typing...';
+    }
+   // typingStatus.html(typingInfo);
+   if(url){
+    finalurl=url+'/typing';
+    sendData={sender_id:$('#login_user_id').val(),message:typingInfo}
+    ajaxCall(finalurl,sendData)
+   }
+    
 }
   function updateLastTypedTime(){
-      lastTypedTime = new Date();
+      lastTypedTime = currentTime();
   }
 
-  setInterval(refreshTypingStatus, 500);
-  msg.keypress(updateLastTypedTime);
-  msg.blur(refreshTypingStatus);
+  function currentTime(){
+    return new Date().getTime();
+  }
+
+  setInterval(refreshTypingStatus, 30000);
+  messageBox.keypress(updateLastTypedTime);
+  messageBox.blur(refreshTypingStatus);
 
   function getDate(time=null) {
       var date;
@@ -45,60 +60,14 @@ function refreshTypingStatus(){
         return date.toLocaleString([], { hour: 'numeric', minute: 'numeric' });
       return  date.toLocaleString();
   }
-  function chatmsg(id=1,src,username,txt,iconclass,time=null){
-      new_id=id*1+1;
-      $('#newusermessage_'+id).remove();
-      var chat_msg=	'<div id="newusermessage_'+new_id+'">'+
-                  '<div>'+
-          '<img src="'+src+'" class="rounded-circle mb-0 mt-0" height="30" width="30"> '+ username+":"+
-            '</div>'+ '<div>'+
-          '<span class="usermessage_1">'+txt+' <i class="fas fa-'+iconclass+'"</i></span>'+'</div>'+
-          '<p><span class="ticketcommentdate">'+'<time class="chattimeago" datetime="'+time+'">'+time+'</time></span></p>';
-          $('#all_messages').append(chat_msg);
-    }
-    $('#chat').on('submit', function(event)
-    {     var url=$('#user_message_server').val();
-          var g=new Date();
-          event.preventDefault();
-          var sender_id=$('#sender_id').val();
-          var receiver_id=$('#receiver_id').val();
-          var time=getDate();
-          var txt = $("#sender_msg").val();
-          if (txt==""){
-            alert('the text is empty');
-            return false;
-          }
-          var username = $("#chat_username").val();
-          chatmsg(1,src,username,txt,'pause-circle  text-primary',time);
-          $.ajax
-          ({
-              url:url,
-              method:"POST",
-              data:{image:src, username:username,text:txt,sender_id:sender_id,
-                receiver_id:receiver_id,user_message:1},
-              dataType:"JSON",
-              beforeSend:function(){
-                chatmsg(1,src,username,txt,'clock text-warning',time);
-              },
-              error:function(){
-                chatmsg(2,src,username,txt,'times text-danger unsent',time);
-              },
-                success:function(data)  {
-                $('#newusermessage_1,#newusermessage_2,#newusermessage_3').remove();
-                $('#all_messages').append(data);
-              },
-              complete:function() {
-                $("#sender_msg").val('');
-                $('.chattimeago').timeago('update', new Date());
-              },
-            })
-    });
+ 
+  
 
     // if the user clicks on the ratings button ...
     $(document).on('click', '.rating-btn', function(){
       var data="Sorry you need to login to perform this action";
       var user_id= $(this).data('user_id');
-      if (user_id == ''|| !$.isNumeric(user_id))
+      if (!user_id|| !$.isNumeric(user_id))
       {
         showAlert(data);
         return false;
@@ -156,32 +125,21 @@ function refreshTypingStatus(){
             $dislikes.text(totaldislikes*1-1);
           }
         }
+        let sendData= {'rating_action': action,'receiver_id':receiver_id,'post_id': post_id};
+        ajaxCall(url,sendData).then(function(response){
+            // display the number of likes and dislikes
+            $likes.text(response.likes);
+            $dislikes.text(response.dislikes);
+        }).catch(function(error){
+          data="Sorry user reaction on this post cannot accepted at the moment";
+          showAlert(data);
+          $clicked_btn.attr('class',  clicked_btnclass);
+          $sibling.attr('class',  siblingclass);
+          $likes.text(totallikes);
+          $dislikes.text(totaldislikes);
+        })
 
-        $.ajax
-        ({
-            url: url,
-            method: 'POST',
-            data: {
-                    'rating_action': action,
-                    'receiver_id':receiver_id,
-                    'post_id': post_id
-                  },
-            dataType:"JSON",
-            error:function()
-            {
-              data="Sorry user reaction on this post cannot accepted at the moment";
-              showAlert(data);
-              $clicked_btn.attr('class',  clicked_btnclass);
-              $sibling.attr('class',  siblingclass);
-              $likes.text(totallikes);
-              $dislikes.text(totaldislikes);
-            } ,
-            success: function(response)
-            { // display the number of likes and dislikes
-              $likes.text(response.likes);
-              $dislikes.text(response.dislikes);
-            }
-        });
+      
     });
 
 
@@ -191,7 +149,7 @@ function refreshTypingStatus(){
           var sender_id= $(this).data('user_id');
           var url=$(this).data('url');
           var data="Sorry, You cannot follow yourself";
-          if (sender_id == ''|| !$.isNumeric(sender_id))
+          if (!sender_id|| !$.isNumeric(sender_id))
             {
               var data="Sorry you need to login to perform this action";
               showAlert(data);
@@ -202,62 +160,130 @@ function refreshTypingStatus(){
             return false;
           }
           $clickedbtn=$(this);
-          var r=$(this).text();
-          if (r=='Follow') {
+          var status=$(this).text();
+          if (status=='Follow') {
               result = 'follow';
               $(this).html('Following').addClass('btn-success').removeClass('btn-primary');
-          } else if(r=='Following'|| r=='UnFollow'){
+          } else if(status=='Following'|| status=='UnFollow'){
             result = 'unfollow';
               $(this).html('<i class="glyphicon glyphicon-plus text-white" style="color:white"></i>Follow').removeClass('btn-success').addClass('btn-primary');
           }
-
-          $.ajax({
-              url: url,
-              method: 'post',
-              data: {
-                  'result': result,
-                  'receiver_id': receiver_id},
-              dataType:"JSON",
-              error:function()
-                   {  data="Sorry the user cannot be followed at the moment";
-                   showAlert(data);
-                     } ,
-              success: function(data){
-
-                if ('error' in data && dat.error!="")
-                {
-                    showAlert(data.error);
-                    $clickedbtn.text(r);
-                }
-            }
-          });
+          let sendData= {'result': result,'receiver_id': receiver_id};
+            ajaxCall(url,sendData).then(function(data){
+              if ('error' in data && data.error)
+              {
+                  showAlert(data.error);
+                  $clickedbtn.text(status);
+              }
+            }).catch(function(){
+              data="Sorry the user cannot be followed at the moment";
+              showAlert(data);
+            })
         });
 
           // if the user clicks on the message button
-          $(document).on('click', '.send_message_button', function(){
-           var receiver_id = $(this).data('receiver_id');
-            var sender_id= $(this).data('sender_id');
-            var chatbox='';
-            var receiver_type=  $(this).data('receiver_type');
-            if (receiver_type=="user"){
-              $('#usermessage_0').hide();
-              $('#chatbox_heading').text('Message');
-            }
-            else{
-              $('#usermessage_0').show();
-              $('#chatbox_heading').text('Support');
-
-            }
-            if (sender_id == ''|| !$.isNumeric(sender_id))
+          $(document).on('click', '.send_message_button,.chatbox-user-list', function(e){
+            e.preventDefault();
+            const id=$(this).data('id');
+            const sender_id= $(this).data('sender_id');
+            if (this.hasAttribute('data-sender_id')&&(!sender_id|| !$.isNumeric(sender_id)))
               {
                 var data="Sorry you need to login to perform this action";
                 showAlert(data);
                 return false;
-              }
-              $('#receiver_type').val(receiver_type);
-              $('#sender_id').val(sender_id);
-              $('#receiver_id').val(receiver_id);
-              $('#chatbox').toggleClass('d-none');
-
+              }            
+            const link=$(this).attr('href');       
+            const profileLink=$(this).data('profile');
+            $imageDiv=$(this).find('.chatbox-user-image');
+            if(!$imageDiv.length)
+            $imageDiv=$('.profile-user-image');
+            $image=$imageDiv.clone().attr('width',40);
+            $chatUsernameDiv=$(this).find('.chatbox-username');
+            if(!$chatUsernameDiv.length)
+            $chatUsernameDiv=$('.profile-username');
+            const chatUsername=$chatUsernameDiv.text();
+            $chatbox=$('#chatbox').clone();
+            $chatbox.removeClass().attr('id',`chatbox${id}`).addClass('mr-2')
+            $chatbox.find('ul li:not(:first)').remove();
+            $chatbox.find('ul li:first').addClass('w-100');
+            $buttons=`<span>
+                            <button type="button" data-id="${id}" id="minimize${id}"class="minimize mr-1 fa-2x d-inline p-0 badge" aria-label="minimize">
+                                -
+                            </button>        
+                            <button type="button" data-id="${id}" class="close d-inline p-0 m-0" aria-label="Close">
+                                <span>&times;</span>
+                            </button>
+                      </span>                    
+                        `;
+            $template=
+            `<span class="dropdown">
+                <a class="btn btn-link btn-sm dropdown-toggle" data-toggle="dropdown">
+                    ${$image.prop('outerHTML')} ${chatUsername}</a>
+                <div class="dropdown-menu shadow dropdown-menu-left"
+                    role="menu">
+                    <a href="${link}"class="dropdown-item" role="presentation" > View Full</a>
+                    <button class="dropdown-item delete" data-element="conversation" data-id="${id}" 
+                    data-action="delete_all" data-sender_id="${id}">Delete Conversation</button>
+                    <a href="${profileLink}" class="dropdown-item " role="presentation" >View Profile</a>
+                </div>
+            </span> `
+            if(!profileLink)
+            $template=`<span><a class="btn btn-link btn-sm" >${$image.prop('outerHTML')} ${chatUsername}</a></span>`
+            $chatbox.find('.tabbutton').addClass('chattabbutton').html('').append($template).append($buttons).attr('id',`tabbutton${id}`).attr('data-id',id); 
+            $chatbox.find('.tab-pane:first').remove();
+            $chatbox.find('.tab-pane').addClass('active').attr('id',`tab-pane${id}`);  
+            $chatbox.find('.user-chat-content').html('').attr('id',`user-chat-content${id}`);
+            $chatbox.find('.typing_on').attr('id',`typing_on${id}`);      
+            $chatbox.find('.chat_username').val(chatUsername)
+            $chatbox.find('input[name="user_id"]').val(id)
+            $chatbox.find('.chat_image').val($image.attr('src'))
+            
+            if(!$(`#chatbox${id}`).length){
+                $('.chatbox-content').append($chatbox);
+               if(link){
+                    ajaxCall(link,id,'get').then(function(result){
+                        $(`#chatbox${id}`).remove();
+                        $chatbox.find('.user-chat-content').html(result.chatview);
+                        $chatbox.find('input[name="conversation_id"]').val(result.conversation_id).attr('id','conversation_id'+id)
+                        $('.chatbox-content').append($chatbox);
+                    })
+                }
+            }        
+            else{            
+                $(`#chatbox${id}`).addClass('highlighted').find('.tabbutton').removeClass('position-fixed bottom-0').addClass('active')
+                
+                setTimeout(function(){
+                    $(`#chatbox${id}`).removeClass('highlighted');
+                }, 1000)
+            }
+            if($(`#tab-pane${id}`).is(':hidden')){
+                    $(`#tab-pane${id}`).show()
+                    $(`#minimize${id}`).html('-')
+            }
+             
           });
+
+          $(document).on('click','.close',function(e){
+            e.preventDefault();
+            const id=$(this).data('id');
+            $(this).closest('div').remove();
+        })
+    
+        $(document).on('click','.minimize',function(e){
+            e.preventDefault();
+            const button=$(this);
+            const id=button.data('id');
+            $(`#tab-pane${id}`).toggle();
+            $('.chattabbutton').each(function(){
+                var buttonId=$(this).data('id');
+                if($(`#tab-pane${buttonId}`).is(':hidden')){
+                    $(`#tabbutton${buttonId}`).addClass('position-fixed bottom-0');
+                    $(`#minimize${buttonId}`).html('^')
+                }
+                else{
+                    $(`#tabbutton${buttonId}`).removeClass('position-fixed bottom-0').addClass('active');
+                    $(`#minimize${buttonId}`).html('-')
+                };
+            })
+        });
 

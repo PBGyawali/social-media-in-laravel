@@ -64,22 +64,18 @@ $(document).ready(function(){
         browserType = isOpera ? 'opera' : isSafari ? 'safari' : '';
     }
 
-    var postid=$('#views').val();
+    var postId=$('#views').val();
     var url=$('#postviews').attr('action');
     var userid=$('#loginid').val();
     var receiverid=$('#receiverid').val();
-    if (userid==""||!$.isNumeric(userid) )
+    if (!userid||!$.isNumeric(userid)||!receiverid||!$.isNumeric(receiverid) )
         return false;
-    if (receiverid==""||!$.isNumeric(receiverid) )
-        return false;
+    var data={post_id:postId,browser:browserType,user_id:receiverid}
+   //ajaxCall(url,data)
     $.ajax({
         url: url,
           method: 'post',
-          data: {
-            post_id:postid,
-            browser:browserType,
-            user_id:receiverid
-                },
+          data: data,
           dataType:"JSON",
       });
     });

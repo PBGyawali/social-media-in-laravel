@@ -4,17 +4,7 @@ $(document).ready(function()
 		window ['figure_'+index]= new Chart($(elem), $(elem).data('bs-chart'));
 	});
 
-    function emptyspace(canvas){
-        const context = canvas.getContext('2d');
-        // Store the current transformation matrix
-            context.save();
-            // Use the identity matrix while clearing the canvas
-            context.setTransform(1, 0, 0, 1, 0, 0);
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            // Restore the transform
-            context.restore();
-            return true;
-    }
+    
 
     $('.bargraph').on('click', function()
     {
@@ -63,22 +53,39 @@ $(document).ready(function()
         $('#bargraph'+'_'+id).data('type','fullmonths');
     });
 
+    function emptySpace(canvas) {
+        return new Promise((resolve, reject) => {
+          try {
+            const context = canvas.getContext('2d');
+            // Store the current transformation matrix
+            context.save();
+            // Use the identity matrix while clearing the canvas
+            context.setTransform(1, 0, 0, 1, 0, 0);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            // Restore the transform
+            context.restore();
+            resolve(true);
+          } catch (error) {
+            reject(error.message);
+          }
+        });
+      }
+
+
 
 
     function updateGraph($category,$value,id=null,$type='line')
     {
-	   var label=$('#label_'+id).text()||'progress';
-	   var canvas = document.getElementById("graph_canvas_"+id);
-       $space= emptyspace(canvas);
-
-	   if (window['figure_'+id].chart!=undefined) {
-		window['figure_'+id].chart.destroy();
-        }
-        let chartOptions=['line','bar'].includes($type)?graphOptions:pieOptions;
+	   var label=$(`#label_${id}`).text()||'progress';
+	   var canvas = document.getElementById(`graph_canvas_${id}`);
+       let chartOptions=['line','bar'].includes($type)?graphOptions:pieOptions;
         let backgroundColor=['line','bar'].includes($type)?'rgb(255, 99, 132)':['rgb(255, 99, 132)','rgb(87, 191, 46)','rgb(255, 205, 86)','#555555','#0047AB','#444444'];
-        if ($space)
-        {
-            window ['figure_'+id]= new Chart(canvas,
+        
+        if (window[`figure_${id}`].chart!=undefined) {
+            window[`figure_${id}`].chart.destroy();
+        }
+       emptySpace(canvas).then(function(){
+            window [`figure_${id}`]= new Chart(canvas,
             {
                     type: $type,
                     data: {
@@ -97,30 +104,20 @@ $(document).ready(function()
                         },
                     options:  chartOptions
             });
-        }
+        }).catch(error => console.error('Error clearing canvas:', error));
     }
 
     $('.refresh').on('click', function()
     { 	var id=$(this).data('id');
 		var url=$(this).data('url');
-		var table=$('#label_'+id).text().toLowerCase();
-		var type=$('#type_'+id).text().toLowerCase();
-        let chart=$('#bargraph'+'_'+id).data('chart');
-      $.ajax
-      ({
-            url: url,
-            method: 'post',
-            data:  {get_full_data:1,table:table,type:type},
-           dataType:"JSON",
-            success: function(data)
-            {
-                updateGraph(data.labels,data.data,id,chart);
-            }
-        });
+		var table=$(`#label_${id}`).text().toLowerCase();
+		var type=$(`#type_${id}`).text().toLowerCase();
+        let chart=$(`#bargraph_${id}`).data('chart');
+        const sendData= {get_full_data:1,table:table,type:type}
+        ajaxCall(url,sendData).then(function(data){
+            updateGraph(data.labels,data.data,id,chart);
+        })
     });
-
-
-
 
         const graphOptions={
             responsive: true,
@@ -169,16 +166,15 @@ $(document).ready(function()
             }
         }
 
-            const pieOptions={
-                responsive: true,
-                maintainAspectRatio:false,
-                legend:{display:true},
-                title:{},
-                animation:{
-                    animateScale:true,//brings chart from inside out
-                }
+        const pieOptions={
+            responsive: true,
+            maintainAspectRatio:false,
+            legend:{display:true},
+            title:{},
+            animation:{
+                animateScale:true,//brings chart from inside out
             }
-
+        }
 });
 
 

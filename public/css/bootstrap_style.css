@@ -26,7 +26,7 @@ html, body{
 
 #sidebar li a, .dropdown-btn
 {
-    color: rgb(178, 137, 253);
+    /* color: rgb(178, 137, 253); */
     width: 100%;
 }
 
@@ -51,12 +51,16 @@ html, body{
 .inactive_page,.inactive_class{
     color:#fff;
 }
+.tabbutton{
+  color:#3e04dffa;
+  background-color:#b2c5e2d0 ;
+}
 
 .active_class,.inactive_class{
     line-height: 40px;
 }
 /*dashboard*/
-div.card.stats a {  color:white;}
+div.card.stats a {  color:white;text-decoration: none;}
 a:hover {  text-decoration: none; }
 div.card{cursor:pointer;}
 
@@ -84,6 +88,20 @@ button#facebook.fa-facebook{
     color:white;
     border-radius: 5px;
   }
+  .content-hover {
+    visibility:hidden ;
+  }
+
+  .trigger-hover:hover + .content-hover {
+    visibility:visible;
+  }
+  
+
+
+.highlighted {
+  /* Highlight styles */
+  animation: glow 0.7s 3; 
+}
 
   @media screen and (max-width: 650px) {
     h1{

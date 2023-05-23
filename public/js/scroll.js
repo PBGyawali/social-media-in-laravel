@@ -14,26 +14,21 @@ var page = 1;
         }
     });
 
-function getMoreData() {
-        $.ajax({
-        url: pagelink + "?page=" + page,
-        beforeSend: function () {
-			$('.ajax-loader').removeClass('d-none');
-            $('.finished').addClass('d-none');
-        },
-        error:function(){
-            $('.finished').removeClass('d-none');
-        },
-        complete: function (){
-            $('.ajax-loader').addClass('d-none');
-        },
-        success: function (data) {
+    function getMoreData() {
+        let url=pagelink + "?page=" + page
+        $('.ajax-loader').removeClass('d-none');
+        $('.finished').addClass('d-none');
+        ajaxCall(url).then(function (data){
             if (data.length == 0) {
                 $('.finished').removeClass('d-none');
                     return;
                 }
             $(".postwall").append(data);
-        }
-   });
-}
+        }).catch(function(){
+            $('.finished').removeClass('d-none');
+        }).then(function(){
+            $('.ajax-loader').addClass('d-none');
+        })
+        
+    }
 });
