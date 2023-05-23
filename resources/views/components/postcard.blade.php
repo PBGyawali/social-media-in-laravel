@@ -5,7 +5,7 @@
                 <?php if($key==0):?>
                     <span class="badge badge-danger position-absolute"> NEW </span>
                 <?php endif?>
-                <img src="<?= $post->image; ?>" height="200" width="100%"  />
+                <img src="<?= $post->post_image; ?>" height="200" width="100%"  />
                 <?php if (isset($button)): ?>
                 <a  href="<?= route('topic.show',$post->topic->id)?>"
                     target='_blank' class="btn category float-right"> <?= $button?>

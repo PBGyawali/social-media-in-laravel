@@ -1,8 +1,5 @@
-        <div
-        @isset($status)
-            id="newticketcomment_{{$id}}"
-        @endisset
-            class=" mb-1">
+        <div id="newticketcomment_{{$id}}"
+            class="mb-1 removable_div_{{$id}}">
             <div>
                 @empty($profile_image)
                     <i class="fas fa-comment fa-2x "></i>
@@ -13,7 +10,8 @@
 
                 <button type="button"
                     class="btn btn-danger delete btn-sm float-right p-0 px-1"
-                    data-id="{{$id}}">
+                    data-id="{{$id}}"
+                    data-url="{{route('ticket.comments')}}">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>

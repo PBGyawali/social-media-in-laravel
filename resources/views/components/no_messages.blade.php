@@ -7,7 +7,7 @@
                         <div class=" "><i class="fas fa-frown text-secondary fa-3x"></i></div>
                     </div>
                     <div>
-                        <span class="text-center "> No messages found <?= $logged_username??''; ?>.</span>
+                        <span class="text-center "> No messages found <?= $logged_username??''?></span>
                     </div>
                 </a>
             </div>

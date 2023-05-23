@@ -11,10 +11,10 @@
                                     <a class="d-flex align-items-center dropdown-item mt-3" href="<?= route('conversation',$chat->sender_id); ?>" style="white-space: normal;cursor:pointer;">
                                         <div class="text-left ">
                                             <div class="">
-                                                <span> <p class=""><?= $chat->message;?></p></span>
+                                                <span> <p class=""><?= ($user_id==$chat->sender_id?'You: ':$chat->username.': ' ).$chat->message;?></p></span>
                                             </div>
                                             <span class="">
-                                                <span class="small mb-0  font-weight-bold"><?= ($user_id==$chat->sender_id)?'You':$chat->username;?></span>
+                                                <span class="small mb-0  font-weight-bold"><?= $chat->username;?></span>
                                                 <p class="small mb-0 d-inline">-<?= $chat->sent_on; ?></p>
                                             </span>
                                         </div>
@@ -22,10 +22,10 @@
                                     <div class="dropdown no-arrow">
                                         <button class="btn btn-link btn-sm" data-toggle="dropdown"  type="button"><i class="fas fa-ellipsis-v text-blue-400"></i></button>
                                         <div class="dropdown-menu text-blue shadow dropdown-menu-right animated--fade-in" role="menu">
-                                            <a class="dropdown-item pt-0 messageaction" role="presentation" data-receiver_id="<?= $user_id ?>" data-sender_id="<?= $chat['sender_id']; ?>" data-id="<?= $chat['id']; ?>" style="cursor:pointer" data-method_type="/delete" data-action="delete"       >Delete this conversation</a>
-                                            <a class="dropdown-item pt-0 messageaction" role="presentation" data-receiver_id="<?= $user_id ?>" data-sender_id="<?= $chat['sender_id']; ?>" data-id="<?= $chat['id']; ?>" style="cursor:pointer" data-method_type="/update" data-action="notification" >Turn off notification</a>
-                                            <a class="dropdown-item pt-0 messageaction" role="presentation" data-receiver_id="<?= $user_id ?>" data-sender_id="<?= $chat['sender_id']; ?>" data-id="<?= $chat['id']; ?>" style="cursor:pointer" data-method_type="/update" data-action="read"         >Mark as Read</a>
-                                            <a class="dropdown-item pt-0 messageaction" role="presentation" data-receiver_id="<?= $user_id ?>" data-sender_id="<?= $chat['sender_id']; ?>" data-id="<?= $chat['id']; ?>" style="cursor:pointer" data-method_type="/update" data-action="archive"      >Archive</a>
+                                            <a class="dropdown-item pt-0 messageaction" role="presentation" data-receiver_id="<?= $user_id ?>" data-id="<?= $chat['id']; ?>" style="cursor:pointer" data-method_type="/delete" data-action="delete_all"       >Delete this conversation</a>
+                                            <a class="dropdown-item pt-0 messageaction" role="presentation" data-receiver_id="<?= $user_id ?>" data-id="<?= $chat['id']; ?>" style="cursor:pointer" data-method_type="/update" data-action="notification" >Turn off notification</a>
+                                            <a class="dropdown-item pt-0 messageaction" role="presentation" data-receiver_id="<?= $user_id ?>" data-id="<?= $chat['id']; ?>" style="cursor:pointer" data-method_type="/update" data-action="read"         >Mark as Read</a>
+                                            <a class="dropdown-item pt-0 messageaction" role="presentation" data-receiver_id="<?= $user_id ?>" data-id="<?= $chat['id']; ?>" style="cursor:pointer" data-method_type="/update" data-action="archive"      >Archive</a>
                                         </div>
                                     </div>
                                 </div>

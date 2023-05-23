@@ -9,8 +9,8 @@
                         </div>
                         <div>
                             <span class="small text-gray-500"><?= $alert->alert_date; ?></span>
-                            <p><?= $alert->alert; ?>
-                                <?= __('alert.'.$alert->type,['name'=>$alert->alert_name,'value'=>$alert->alert_value])?>
+                            <p>
+                                <?= __('alert.'.$alert->type,['name'=>$alert->alert_name,'value'=>$alert->alert_value,'title'=>$alert->alert_value])?>
                             </p>
                         </div>
                     </a>

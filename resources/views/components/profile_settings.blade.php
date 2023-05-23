@@ -1,6 +1,6 @@
     <div class="tab-pane show active" id="ex1-tabs-0" role="tabpanel" aria-labelledby="ex1-tab-0">
         <form method="post" class="profile settings form no-reset" id="profile_setting_form" enctype="multipart/form-data" action="<?= route('userlog').'/'.auth()->id(); ?>">
-          <div class="card shadow mb-4">
+          <div class="card shadow">
               <div class="card-header py-3">
                   <div class="row">
                       <div class="col">
@@ -8,7 +8,6 @@
                       </div>
                       <div clas="col text-right" >
                           <button type="submit" name="profile_edit_button" id="profile_edit_button" class="btn btn-primary btn-sm edit_button"><i class="fas fa-edit"></i> Save</button>
-                          &nbsp;&nbsp;
                       </div>
                   </div>
               </div>

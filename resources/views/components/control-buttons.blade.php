@@ -5,10 +5,10 @@
     </button>
     @endif
     @if (in_array('update', $buttons))
-    <button type="button" class="btn btn-primary mb-1 btn-sm update" data-prefix="{{ucwords($prefix)}}" data-id="{{$id}}"><i class="fas fa-eye"></i></button>
+    <button type="button" class="btn btn-primary mb-1 btn-sm update" data-target="{{$target??''}}" data-prefix="{{ucwords($prefix)}}" data-id="{{$id}}"><i class="fas fa-eye"></i></button>
     @endif
     @if (in_array('delete', $buttons))
-      <button type="button"  class="btn btn-danger btn-sm border delete"  data-action="delete" title="Delete {{$prefix}} data" data-id="{{$id}}">
+      <button type="button"  class="btn btn-danger btn-sm border delete" data-prefix="{{ucwords($prefix)}}" data-action="delete" title="Delete {{$prefix}} data" data-id="{{$id}}">
         <i class="fas fa-times"></i>
       </button>
     @endif
@@ -26,7 +26,7 @@
       @endempty
     @endif
     @isset($reseturl)
-      <button type="button"  class="btn btn-primary btn-sm reset" title="Reset {{$prefix}} password"data-url="{{$reseturl}}" data-id="{{$id}}">
+      <button type="button"  class="btn btn-primary btn-sm reset" data-prefix="{{ucwords($prefix)}}" data-action="reset" title="Reset {{$prefix}} password"data-url="{{$reseturl}}" data-id="{{$id}}">
         <i class="fas fa-sync"></i>
       </button>
     @endisset
